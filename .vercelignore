@@ -1,0 +1,7 @@
+# Không ignore bất kỳ file nào - deploy tất cả
+# Chỉ ignore các file không cần thiết
+node_modules/
+.git/
+.env
+*.log
+.DS_Store

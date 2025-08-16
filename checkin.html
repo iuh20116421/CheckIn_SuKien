@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="container">
+        <!-- Countdown Section -->
+        <div id="countdownSection" class="countdown-section">
+            <div class="logo">
+                <div class="logo-placeholder">
+                    <div class="logo">
+                        <img src="image/logos.png" alt="AI E-COMMERCE REVOLUTION">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="event-info">
+                <h1 class="event-title">AI E-COMMERCE REVOLUTION</h1>
+                <h2 class="event-subtitle">TƯ DUY MỚI, TĂNG TRƯỞNG ĐỘT PHÁ TRONG KỶ NGUYÊN AI</h2>
+            </div>
+            
+            <div class="countdown-container">
+                <h4 class="countdown-title">Đếm ngược đến ngày diễn ra sự kiện</h4>
+                <div class="countdown-timer">
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="days">00</div>
+                        <div class="countdown-label">Ngày</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="hours">00</div>
+                        <div class="countdown-label">Giờ</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="minutes">00</div>
+                        <div class="countdown-label">Phút</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="seconds">00</div>
+                        <div class="countdown-label">Giây</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="event-details">
+                <div class="event-date">
+                    <div class="date-main">17.09.2025</div>
+                </div>
+                <div class="event-separator"></div>
+                <div class="event-day-time">
+                    <div class="day-of-week">Thứ Tư</div>
+                    <div class="time-range">7h30 - 17h30</div>
+                </div>
+                <div class="event-separator"></div>
+                <div class="event-location">
+                    <div class="location-main">Trống Đồng Palace</div>
+                    <div class="location-address">489 Hoàng Quốc Việt, p.Nghĩa Đô, Hà Nội</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Check-in Section (Hidden initially) -->
+        <div id="checkinSection" class="checkin-section" style="display: none;">
+            <div class="logo">
+                <div class="logo-placeholder">
+                    <div class="logo">
+                        <img src="image/logos.png" alt="AI E-COMMERCE REVOLUTION">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="event-info">
+                <h1 class="event-title">AI E-COMMERCE REVOLUTION</h1>
+                <h2 class="event-subtitle">TƯ DUY MỚI, TĂNG TRƯỞNG ĐỘT PHÁ TRONG KỶ NGUYÊN AI</h2>
+            </div>
+            
+            <div class="checkin-container">
+                <h4 class="checkin-title">Check-in sự kiện</h4>
+                <form id="checkinForm" class="checkin-form">
+                    <input type="text" id="checkinCode" class="checkin-input" placeholder="Nhập mã tại đây (số điện thoại đã đăng ký)" required>
+                    <button type="submit" class="checkin-btn">Check-in</button>
+                </form>
+            </div>
+            
+            <div class="robot-image-section">
+                <img src="image/robot.png" alt="Robot AI" class="robot-image">
+            </div>
+            
+            <div class="event-details">
+                <div class="event-date">
+                    <div class="date-main">17.09.2025</div>
+                </div>
+                <div class="event-separator"></div>
+                <div class="event-day-time">
+                    <div class="day-of-week">Thứ Tư</div>
+                    <div class="time-range">7h30 - 17h30</div>
+                </div>
+                <div class="event-separator"></div>
+                <div class="event-location">
+                    <div class="location-main">Trống Đồng Palace</div>
+                    <div class="location-address">489 Hoàng Quốc Việt, p.Nghĩa Đô, Hà Nội</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Event date: 17.09.2025 at 7:30 AM (Vietnam timezone)
+        const eventDate = new Date('2025-08-16T07:30:00+07:00');
+        
+        // Countdown timer
+        function updateCountdown() {
+            const now = new Date();
+            const timeLeft = eventDate - now;
+            
+            if (timeLeft <= 0) {
+                // Event has started, show check-in form
+                document.getElementById('countdownSection').style.display = 'none';
+                document.getElementById('checkinSection').style.display = 'block';
+                return;
+            }
+            
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            // Update countdown display
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            
+            // Add animation effect when seconds change
+            const secondsElement = document.getElementById('seconds');
+            secondsElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                secondsElement.style.transform = 'scale(1)';
+            }, 100);
+        }
+        
+        // Update countdown every second
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call
+        
+        // Check-in form functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('checkinForm');
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const code = document.getElementById('checkinCode').value.trim();
+                
+                if (!code) {
+                    showNotification('Vui lòng nhập mã check-in', 'error');
+                    return;
+                }
+                
+                // Simple validation (replace with actual backend call)
+                if (code.length >= 3) {
+                    showNotification('Check-in thành công! Mã: ' + code, 'success');
+                    document.getElementById('checkinCode').value = '';
+                } else {
+                    showNotification('Mã check-in không hợp lệ', 'error');
+                }
+            });
+        });
+        
+        // Notification function
+        function showNotification(message, type) {
+            // Remove existing notification
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close">&times;</button>
+                </div>
+            `;
+            
+            // Add styles
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 1000;
+                max-width: 300px;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.animation = 'slideOut 0.3s ease-in';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }
+            }, 5000);
+            
+            // Close button functionality
+            const closeBtn = notification.querySelector('.notification-close');
+            closeBtn.addEventListener('click', () => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
+            });
+        }
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            .notification-close {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                margin-left: 10px;
+                float: right;
+            }
+            .notification-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
+

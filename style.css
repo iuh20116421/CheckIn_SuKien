@@ -397,12 +397,14 @@ body::after {
 
 .robot-image-section {
     position: absolute;
-    right: -50px;
+    right: -80px;
     top: 60%;
     transform: translateY(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 10;
+    pointer-events: auto;
 }
 
 .robot-image {
@@ -917,10 +919,11 @@ body::after {
         transform: none;
         margin-top: 30px;
         text-align: center;
+        z-index: auto;
     }
     
     .robot-image {
-        max-width: 200px;
+        max-width: 250px;
     }
     
     /* Tối ưu hiệu ứng cho tablet */
@@ -999,7 +1002,7 @@ body::after {
     }
     
     .robot-image {
-        max-width: 150px;
+        max-width: 180px;
     }
     
     /* Tối ưu hiệu ứng cho mobile */
@@ -1008,9 +1011,16 @@ body::after {
         display: none;
     }
     
-    .robot-image-section::before,
     .robot-image-section::after {
         display: none;
+    }
+    
+    /* Giữ lại text AI E-COMMERCE trên mobile */
+    .robot-image-section::before {
+        content: 'AI E-COMMERCE';
+        font-size: 12px;
+        top: -20px;
+        display: block;
     }
     
     .robot-image {
@@ -1077,7 +1087,12 @@ body::after {
     }
     
     .robot-image {
-        max-width: 120px;
+        max-width: 140px;
+    }
+    
+    .robot-image-section::before {
+        font-size: 10px;
+        top: -15px;
     }
     
     .date-main {

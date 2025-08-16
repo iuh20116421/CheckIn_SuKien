@@ -92,7 +92,7 @@ body::after {
     text-align: center;
 }
 
-.logo img {
+.logo-main img {
     margin-top: 10px;
     max-width: 200px;
     margin-bottom: 40px;
@@ -101,7 +101,7 @@ body::after {
     transition: all 0.3s ease;
 }
 
-.logo img:hover {
+.logo-main img:hover {
     filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.8));
     transform: scale(1.05);
 }

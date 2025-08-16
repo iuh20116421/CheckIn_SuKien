@@ -14,33 +14,28 @@
       "use": "@vercel/static"
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/checkin.html"
+      "src": "/style.css",
+      "dest": "/style.css"
+    },
+    {
+      "src": "/image/(.*)",
+      "dest": "/image/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/checkin.html"
     }
   ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/*.css",
       "headers": [
         {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
+          "key": "Content-Type",
+          "value": "text/css; charset=utf-8"
         },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
-    },
-    {
-      "source": "/image/(.*)",
-      "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
@@ -48,12 +43,8 @@
       ]
     },
     {
-      "source": "/*.css",
+      "source": "/image/(.*)",
       "headers": [
-        {
-          "key": "Content-Type",
-          "value": "text/css"
-        },
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"

@@ -167,26 +167,18 @@
                             <a href="#" id="customerEmail" class="email-link">-</a>
                         </span>
                     </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Hạng vé:</span>
-                        <span class="detail-value" id="customerTicketClass">-</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Mã đơn hàng:</span>
-                        <span class="detail-value order-code" id="customerOrderCode">-</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Giá vé (chưa bao gồm VAT):</span>
-                        <span class="detail-value price" id="customerPriceExVAT">-</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Giá vé (Đã bao gồm VAT):</span>
-                        <span class="detail-value price" id="customerPriceIncVAT">-</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">THời gian thanh toán:</span>
-                        <span class="detail-value status-paid" id="customerStatus">-</span>
-                    </div>
+                                         <div class="detail-row">
+                         <span class="detail-label">Hạng vé:</span>
+                         <span class="detail-value" id="customerTicketClass">-</span>
+                     </div>
+                     <div class="detail-row">
+                         <span class="detail-label">Mã đơn hàng:</span>
+                         <span class="detail-value order-code" id="customerOrderCode">-</span>
+                     </div>
+                     <div class="detail-row">
+                         <span class="detail-label">Thời gian thanh toán:</span>
+                         <span class="detail-value status-paid" id="customerStatus">-</span>
+                     </div>
                 </div>
                 <div class="customer-actions">
                     <button class="back-btn" onclick="showCheckinSection()">Check-in người khác</button>
@@ -472,28 +464,24 @@
             console.log('checkinSection visibility:', checkinSection ? checkinSection.style.visibility : 'element not found');
             console.log('customerDetailsSection display:', customerDetailsSection ? customerDetailsSection.style.display : 'element not found');
             
-            // Cập nhật thông tin khách hàng theo cấu trúc thực tế của Google Sheets
-            // Dựa trên hình ảnh, cần sửa lại mapping cho đúng
-            document.getElementById('customerName').textContent = userInfo[2] || '-'; // Họ tên (cột C)
-            document.getElementById('customerPhone').textContent = userInfo[4] || '-'; // SĐT (cột E)
-            document.getElementById('customerEmail').textContent = userInfo[3] || '-'; // Email (cột D)
-            document.getElementById('customerEmail').href = `mailto:${userInfo[3] || ''}`;
-            document.getElementById('customerTicketClass').textContent = userInfo[1] || '-'; // Hạng vé (cột B)
-            document.getElementById('customerOrderCode').textContent = userInfo[0] || '-'; // Mã đơn hàng (cột A)
-            document.getElementById('customerPriceExVAT').textContent = userInfo[5] || '-'; // Giá vé chưa VAT (cột F)
-            document.getElementById('customerPriceIncVAT').textContent = userInfo[6] || '-'; // Giá vé đã VAT (cột G)
-            document.getElementById('customerStatus').textContent = userInfo[7] || '-'; // Trạng thái (cột H)
+                         // Cập nhật thông tin khách hàng theo cấu trúc thực tế của Google Sheets
+             // Dựa trên hình ảnh, cần sửa lại mapping cho đúng
+             document.getElementById('customerName').textContent = userInfo[2] || '-'; // Họ tên (cột C)
+             document.getElementById('customerPhone').textContent = userInfo[4] || '-'; // SĐT (cột E)
+             document.getElementById('customerEmail').textContent = userInfo[3] || '-'; // Email (cột D)
+             document.getElementById('customerEmail').href = `mailto:${userInfo[3] || ''}`;
+                           document.getElementById('customerTicketClass').textContent = userInfo[25] || '-'; // Hạng vé (cột Z - Mã SKU - Lineitem sku)
+             document.getElementById('customerOrderCode').textContent = userInfo[0] || '-'; // Mã đơn hàng (cột A)
+             document.getElementById('customerStatus').textContent = userInfo[7] || '-'; // Trạng thái (cột H)
             
-            console.log('Đã cập nhật thông tin khách hàng:', {
-                name: userInfo[2], // Họ tên (cột C)
-                phone: userInfo[4], // SĐT (cột E)
-                email: userInfo[3], // Email (cột D)
-                ticketClass: userInfo[1], // Hạng vé (cột B)
-                orderCode: userInfo[0], // Mã đơn hàng (cột A)
-                priceExVAT: userInfo[5], // Giá vé chưa VAT (cột F)
-                priceIncVAT: userInfo[6], // Giá vé đã VAT (cột G)
-                status: userInfo[7] // Trạng thái (cột H)
-            });
+                         console.log('Đã cập nhật thông tin khách hàng:', {
+                 name: userInfo[2], // Họ tên (cột C)
+                 phone: userInfo[4], // SĐT (cột E)
+                 email: userInfo[3], // Email (cột D)
+                 ticketClass: userInfo[25], // Hạng vé (cột Z - Mã SKU - Lineitem sku)
+                 orderCode: userInfo[0], // Mã đơn hàng (cột A)
+                 status: userInfo[7] // Trạng thái (cột H)
+             });
             
             // Kiểm tra trạng thái hiển thị sau khi hoàn thành
             setTimeout(() => {

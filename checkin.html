@@ -184,7 +184,7 @@
                         <span class="detail-value price" id="customerPriceIncVAT">-</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Trạng thái:</span>
+                        <span class="detail-label">THời gian thanh toán:</span>
                         <span class="detail-value status-paid" id="customerStatus">-</span>
                     </div>
                 </div>
@@ -249,8 +249,15 @@
 
                 if (responseData && responseData.values) {
                     usersData = responseData.values;
-                    // Lấy số điện thoại từ cột thứ 5 trong mỗi mảng
-                    phoneNumbers = responseData.values.map(row => row[4]); // Cột 5 là số điện thoại
+                    // Lấy số điện thoại từ cột thứ 5 trong mỗi mảng và thêm số 0 ở đầu nếu cần
+                    phoneNumbers = responseData.values.map(row => {
+                        let phone = row[4] || '';
+                        // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
+                        if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
+                            phone = '0' + phone;
+                        }
+                        return phone;
+                    });
                     console.log("Số điện thoại đã được lưu:", phoneNumbers);
                     console.log("Tổng số người đăng ký:", phoneNumbers.length);
                     console.log("Dữ liệu mẫu:", responseData.values[0]); // Log dữ liệu mẫu
@@ -275,7 +282,14 @@
                         const directData = await directResponse.json();
                         if (directData && directData.values) {
                             usersData = directData.values;
-                            phoneNumbers = directData.values.map(row => row[4]);
+                            phoneNumbers = directData.values.map(row => {
+                                let phone = row[4] || '';
+                                // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
+                                if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
+                                    phone = '0' + phone;
+                                }
+                                return phone;
+                            });
                             console.log("Direct API call successful!");
                             console.log("Số điện thoại đã được lưu:", phoneNumbers);
                         }
@@ -320,6 +334,15 @@
         console.log('Starting application with direct Google Sheets API...');
         getListPhoneNumber();
         
+        // Thêm function để debug dữ liệu
+        window.debugPhoneNumbers = function() {
+            console.log('=== DEBUG PHONE NUMBERS ===');
+            console.log('Tổng số người đăng ký:', phoneNumbers.length);
+            console.log('Danh sách số điện thoại:', phoneNumbers);
+            console.log('Dữ liệu mẫu (5 người đầu):', usersData.slice(0, 5));
+            console.log('==========================');
+        };
+        
         // Update countdown every second
         setInterval(updateCountdown, 1000);
         updateCountdown(); // Initial call
@@ -338,11 +361,38 @@
                     showNotification('Vui lòng nhập số điện thoại!', 'error');
                     return;
                 }
-                const normalizedCode = code.startsWith('0') ? code.slice(1) : code;
-                // Kiểm tra số điện thoại có trong danh sách không
-                if (phoneNumbers.includes(normalizedCode)) {
+                // Debug: Log thông tin để kiểm tra
+                console.log('Số điện thoại nhập vào:', code);
+                console.log('Danh sách số điện thoại đã load:', phoneNumbers);
+                
+                // Chuẩn hóa số điện thoại để so sánh - sửa lại logic
+                let normalizedCode = code;
+                
+                // Thử tìm kiếm với nhiều format khác nhau
+                let found = false;
+                let userIndex = -1;
+                
+                // Thử 1: Tìm chính xác số đã nhập
+                if (phoneNumbers.includes(code)) {
+                    found = true;
+                    userIndex = phoneNumbers.indexOf(code);
+                    console.log('Tìm thấy với format gốc:', code);
+                }
+                // Thử 2: Nếu nhập số có 0, thử tìm không có 0
+                else if (code.startsWith('0') && phoneNumbers.includes(code.slice(1))) {
+                    found = true;
+                    userIndex = phoneNumbers.indexOf(code.slice(1));
+                    console.log('Tìm thấy sau khi bỏ số 0:', code.slice(1));
+                }
+                // Thử 3: Nếu nhập số không có 0, thử tìm có 0
+                else if (!code.startsWith('0') && phoneNumbers.includes('0' + code)) {
+                    found = true;
+                    userIndex = phoneNumbers.indexOf('0' + code);
+                    console.log('Tìm thấy sau khi thêm số 0:', '0' + code);
+                }
+                
+                if (found) {
                     // Tìm thông tin của người đó từ mảng values
-                    const userIndex = phoneNumbers.indexOf(normalizedCode);
                     const userInfo = usersData[userIndex];
 
                     console.log("Thông tin người check-in:", userInfo);
@@ -359,6 +409,9 @@
                     
                     console.log('Hoàn thành check-in process');
                 } else {
+                    console.log('Không tìm thấy số điện thoại trong danh sách');
+                    console.log('Số điện thoại đã thử:', code);
+                    console.log('Một số số điện thoại trong danh sách:', phoneNumbers.slice(0, 5));
                     showNotification('Không tìm thông tin người đăng kí trong danh sách!', 'error');
                 }
             });
@@ -419,27 +472,27 @@
             console.log('checkinSection visibility:', checkinSection ? checkinSection.style.visibility : 'element not found');
             console.log('customerDetailsSection display:', customerDetailsSection ? customerDetailsSection.style.display : 'element not found');
             
-            // Cập nhật thông tin khách hàng (giả sử cấu trúc dữ liệu từ Google Sheets)
-            // Điều chỉnh index theo cấu trúc thực tế của Google Sheets
-            document.getElementById('customerName').textContent = userInfo[0] || '-'; // Họ tên
-            document.getElementById('customerPhone').textContent = userInfo[4] || '-'; // SĐT
-            document.getElementById('customerEmail').textContent = userInfo[3] || '-'; // Email
+            // Cập nhật thông tin khách hàng theo cấu trúc thực tế của Google Sheets
+            // Dựa trên hình ảnh, cần sửa lại mapping cho đúng
+            document.getElementById('customerName').textContent = userInfo[2] || '-'; // Họ tên (cột C)
+            document.getElementById('customerPhone').textContent = userInfo[4] || '-'; // SĐT (cột E)
+            document.getElementById('customerEmail').textContent = userInfo[3] || '-'; // Email (cột D)
             document.getElementById('customerEmail').href = `mailto:${userInfo[3] || ''}`;
-            document.getElementById('customerTicketClass').textContent = userInfo[2] || '-'; // Hạng vé
-            document.getElementById('customerOrderCode').textContent = userInfo[1] || '-'; // Mã đơn hàng
-            document.getElementById('customerPriceExVAT').textContent = userInfo[5] || '-'; // Giá vé chưa VAT
-            document.getElementById('customerPriceIncVAT').textContent = userInfo[6] || '-'; // Giá vé đã VAT
-            document.getElementById('customerStatus').textContent = userInfo[7] || '-'; // Trạng thái
+            document.getElementById('customerTicketClass').textContent = userInfo[1] || '-'; // Hạng vé (cột B)
+            document.getElementById('customerOrderCode').textContent = userInfo[0] || '-'; // Mã đơn hàng (cột A)
+            document.getElementById('customerPriceExVAT').textContent = userInfo[5] || '-'; // Giá vé chưa VAT (cột F)
+            document.getElementById('customerPriceIncVAT').textContent = userInfo[6] || '-'; // Giá vé đã VAT (cột G)
+            document.getElementById('customerStatus').textContent = userInfo[7] || '-'; // Trạng thái (cột H)
             
             console.log('Đã cập nhật thông tin khách hàng:', {
-                name: userInfo[0],
-                phone: userInfo[4],
-                email: userInfo[3],
-                ticketClass: userInfo[2],
-                orderCode: userInfo[1],
-                priceExVAT: userInfo[5],
-                priceIncVAT: userInfo[6],
-                status: userInfo[7]
+                name: userInfo[2], // Họ tên (cột C)
+                phone: userInfo[4], // SĐT (cột E)
+                email: userInfo[3], // Email (cột D)
+                ticketClass: userInfo[1], // Hạng vé (cột B)
+                orderCode: userInfo[0], // Mã đơn hàng (cột A)
+                priceExVAT: userInfo[5], // Giá vé chưa VAT (cột F)
+                priceIncVAT: userInfo[6], // Giá vé đã VAT (cột G)
+                status: userInfo[7] // Trạng thái (cột H)
             });
             
             // Kiểm tra trạng thái hiển thị sau khi hoàn thành

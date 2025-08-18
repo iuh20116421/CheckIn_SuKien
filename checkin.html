@@ -467,7 +467,12 @@
                          // Cập nhật thông tin khách hàng theo cấu trúc thực tế của Google Sheets
              // Dựa trên hình ảnh, cần sửa lại mapping cho đúng
              document.getElementById('customerName').textContent = userInfo[2] || '-'; // Họ tên (cột C)
-             document.getElementById('customerPhone').textContent = userInfo[4] || '-'; // SĐT (cột E)
+                           // Hiển thị số điện thoại với số 0 ở đầu
+              let phoneDisplay = userInfo[4] || '-';
+              if (phoneDisplay !== '-' && !phoneDisplay.startsWith('0') && phoneDisplay.length >= 9 && phoneDisplay.length <= 10) {
+                  phoneDisplay = '0' + phoneDisplay;
+              }
+              document.getElementById('customerPhone').textContent = phoneDisplay; // SĐT (cột E)
              document.getElementById('customerEmail').textContent = userInfo[3] || '-'; // Email (cột D)
              document.getElementById('customerEmail').href = `mailto:${userInfo[3] || ''}`;
                            document.getElementById('customerTicketClass').textContent = userInfo[25] || '-'; // Hạng vé (cột Z - Mã SKU - Lineitem sku)

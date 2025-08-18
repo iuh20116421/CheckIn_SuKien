@@ -1,154 +1,123 @@
-# Check-in Event System
+# 🎯 Check-In Event System
 
-Hệ thống check-in sự kiện với giao diện đẹp và tính năng hiển thị thông tin chi tiết khách hàng.
+Hệ thống check-in sự kiện với Google Sheets integration và Vercel Functions.
 
-## Tính năng
+## 🚀 Setup Vercel Functions
 
-- ⏰ Đếm ngược thời gian đến sự kiện
-- 📱 Giao diện responsive cho mobile và desktop
-- ✅ Check-in bằng số điện thoại
-- 📊 Hiển thị thông tin chi tiết khách hàng
-- 🔄 Tích hợp Google Sheets API
-- 🎨 Giao diện hiện đại với hiệu ứng đẹp mắt
+### Bước 1: Deploy lên Vercel
 
-## Cấu trúc dự án
+1. **Vào Vercel Dashboard**: https://vercel.com/dashboard
+2. **Click "New Project"**
+3. **Import Git Repository** → Chọn repository của bạn
+4. **Cấu hình Project**:
+   - Framework Preset: **Other**
+   - Root Directory: `./` (để trống)
+   - Build Command: Để trống
+   - Output Directory: Để trống
+   - Install Command: Để trống
+5. **Click "Deploy"**
+
+### Bước 2: Thêm Environment Variables
+
+1. **Vào Project Settings** → **Environment Variables**
+2. **Thêm 3 biến**:
+
+```
+Name: GOOGLE_SHEETS_API_KEY
+Value: AIzaSyDW-UUUQc4AFLpO3kMk_lB_RkSF_sHZyo4
+Environment: Production, Preview, Development
+```
+
+```
+Name: GOOGLE_SHEETS_SPREADSHEET_ID
+Value: 1onh0l-7hZ2JQDr9c4rnkC6QHXALYnvRJGdMOs2Wb8w4
+Environment: Production, Preview, Development
+```
+
+```
+Name: GOOGLE_SHEETS_RANGE
+Value: LadiPage!A2:AZ67
+Environment: Production, Preview, Development
+```
+
+3. **Click "Save"** và **Redeploy**
+
+### Bước 3: Test
+
+1. **Test API**: `https://your-project.vercel.app/api/sheets`
+2. **Test website**: `https://your-project.vercel.app`
+
+## 📁 Project Structure
 
 ```
 CheckInEvent/
-├── checkin.html          # File HTML chính
-├── style.css             # File CSS styles
-├── config.js             # File cấu hình (API keys, settings)
-├── .gitignore            # File bỏ qua Git
-├── README.md             # File hướng dẫn
-├── vercel.json           # Cấu hình deploy Vercel
-└── image/                # Thư mục chứa hình ảnh
-    ├── logos.png
-    ├── AiEcommerce.png
-    ├── RobotEcommerce.png
-    └── ...
+├── checkin.html          # Main website
+├── style.css            # Styles
+├── api/
+│   └── sheets.js        # Vercel serverless function
+├── vercel.json          # Vercel configuration
+├── .gitignore           # Git ignore rules
+└── README.md           # This file
 ```
 
-## Cài đặt và sử dụng
+## 🔧 Files Configuration
 
-### 1. Clone dự án
-```bash
-git clone <repository-url>
-cd CheckInEvent
+### `api/sheets.js`
+Vercel serverless function để proxy Google Sheets API calls.
+
+### `vercel.json`
+```json
+{
+  "rewrites": [
+    {
+      "source": "/api/sheets",
+      "destination": "/api/sheets.js"
+    }
+  ],
+  "functions": {
+    "api/sheets.js": {
+      "maxDuration": 10
+    }
+  }
+}
 ```
 
-### 2. Cấu hình API Keys
-Chỉnh sửa file `config.js` với thông tin của bạn:
+### `checkin.html`
+Website chính với proxy API integration.
 
-```javascript
-const config = {
-    GOOGLE_SHEETS: {
-        API_KEY: 'your-google-sheets-api-key',
-        SPREADSHEET_ID: 'your-spreadsheet-id',
-        RANGE: 'SheetName!A2:AZ67'
-    },
-    // ... other config
-};
-```
+## ✅ Checklist
 
-### 3. Cấu trúc Google Sheets
-Google Sheets cần có cấu trúc như sau:
-- Cột A: Họ tên
-- Cột B: Mã đơn hàng  
-- Cột C: Hạng vé
-- Cột D: Email
-- Cột E: Số điện thoại
-- Cột F: Giá vé (chưa VAT)
-- Cột G: Giá vé (đã VAT)
-- Cột H: Trạng thái
+- [ ] Deploy lên Vercel
+- [ ] Thêm Environment Variables
+- [ ] Test API endpoint
+- [ ] Test website functionality
+- [ ] Verify check-in process
+- [ ] Verify customer details display
 
-### 4. Chạy dự án
-Mở file `checkin.html` trong trình duyệt hoặc sử dụng local server:
+## 🎯 Features
 
-```bash
-# Sử dụng Python
-python -m http.server 8000
+- ✅ **Secure API Key**: Bảo vệ trong environment variables
+- ✅ **Proxy API**: Vercel Functions xử lý requests
+- ✅ **Customer Details**: Hiển thị thông tin khách hàng sau check-in
+- ✅ **Responsive Design**: Tương thích mobile/desktop
+- ✅ **Real-time Updates**: Tự động refresh dữ liệu
 
-# Sử dụng Node.js
-npx serve .
+## 🔗 Important URLs
 
-# Sử dụng PHP
-php -S localhost:8000
-```
+- **Website**: `https://your-project.vercel.app`
+- **API Endpoint**: `https://your-project.vercel.app/api/sheets`
+- **Vercel Dashboard**: `https://vercel.com/dashboard`
 
-## Bảo mật
+## 🛠️ Troubleshooting
 
-### ⚠️ Quan trọng về bảo mật
+### Lỗi 500: "Server configuration error"
+- Kiểm tra Environment Variables đã được set chưa
+- Redeploy project sau khi thêm environment variables
 
-1. **File config.js đã được thêm vào .gitignore** để bảo vệ API keys
-2. **Không commit file config.js** lên Git repository
-3. **Tạo file config.example.js** để làm mẫu cho team
+### Lỗi 403: "Google Sheets API error"
+- Kiểm tra API key có hợp lệ không
+- Đảm bảo Google Sheets API đã được enable
 
-### Tạo file config.example.js
-```javascript
-const config = {
-    GOOGLE_SHEETS: {
-        API_KEY: 'YOUR_API_KEY_HERE',
-        SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID_HERE',
-        RANGE: 'SheetName!A2:AZ67'
-    },
-    // ... other config
-};
-```
-
-## Tính năng mới
-
-### Hiển thị thông tin khách hàng
-Sau khi check-in thành công:
-- ✅ Hiển thị thông báo thành công
-- 📋 Chuyển sang section hiển thị thông tin chi tiết
-- 🔄 Nút "Quay lại Check-in" để tiếp tục
-
-### Giao diện thông tin khách hàng
-- 🎨 Thiết kế hiện đại với hiệu ứng hover
-- 📱 Responsive cho mọi thiết bị
-- 🎯 Hiển thị đầy đủ thông tin:
-  - Họ tên
-  - Số điện thoại
-  - Email (có thể click để gửi mail)
-  - Hạng vé
-  - Mã đơn hàng
-  - Giá vé (chưa/đã VAT)
-  - Trạng thái thanh toán
-
-## Deploy
-
-### Vercel
-Dự án đã có sẵn file `vercel.json` để deploy lên Vercel:
-
-```bash
-npm install -g vercel
-vercel
-```
-
-### GitHub Pages
-Có thể deploy lên GitHub Pages bằng cách push code lên repository và enable GitHub Pages.
-
-## Troubleshooting
-
-### Lỗi API Google Sheets
-1. Kiểm tra API key có đúng không
-2. Kiểm tra Spreadsheet ID
-3. Kiểm tra quyền truy cập Google Sheets
-4. Kiểm tra CORS nếu chạy local
-
-### Lỗi hiển thị
-1. Kiểm tra console browser để xem lỗi JavaScript
-2. Kiểm tra cấu trúc dữ liệu Google Sheets
-3. Kiểm tra index của các cột trong function `displayCustomerDetails`
-
-## Đóng góp
-
-1. Fork dự án
-2. Tạo branch mới (`git checkout -b feature/AmazingFeature`)
-3. Commit thay đổi (`git commit -m 'Add some AmazingFeature'`)
-4. Push lên branch (`git push origin feature/AmazingFeature`)
-5. Tạo Pull Request
-
-## License
-
-Dự án này được phát hành dưới MIT License.
+### Lỗi CORS
+- Vercel Functions đã xử lý CORS tự động
+- Kiểm tra URL API có đúng không

@@ -7,7 +7,34 @@
     <title>AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="config.js"></script>
+    <script>
+        // Config tạm thời với API key trực tiếp (để test nhanh)
+        let config = {
+            // Google Sheets Configuration
+            GOOGLE_SHEETS: {
+                API_KEY: 'AIzaSyDW-UUUQc4AFLpO3kMk_lB_RkSF_sHZyo4',
+                SPREADSHEET_ID: '1onh0l-7hZ2JQDr9c4rnkC6QHXALYnvRJGdMOs2Wb8w4',
+                RANGE: 'LadiPage!A2:AZ67'
+            },
+            
+            // Event Configuration
+            EVENT: {
+                DATE: '2025-09-17T07:30:00+07:00',
+                TITLE: 'AI E-COMMERCE REVOLUTION',
+                LOCATION: 'Trống Đồng Palace',
+                ADDRESS: '489 Hoàng Quốc Việt, p.Nghĩa Đô , Hà Nội'
+            },
+            
+            // Application Settings
+            APP: {
+                DEBUG: false,
+                AUTO_REFRESH_INTERVAL: 30000,
+                NOTIFICATION_DURATION: 5000
+            }
+        };
+        
+        console.log('Config loaded successfully:', config);
+    </script>
 </head>
 
 <body>
@@ -163,7 +190,6 @@
                 </div>
                 <div class="customer-actions">
                     <button class="back-btn" onclick="showCheckinSection()">Check-in người khác</button>
-                    <button class="debug-btn" onclick="checkSectionVisibility()" style="margin-left: 10px; background: #666; padding: 8px 15px; border-radius: 5px; color: white; border: none; cursor: pointer; font-size: 12px;">Debug Status</button>
                 </div>
             </div>
 
@@ -194,15 +220,31 @@
         const eventDate = new Date('2025-08-17T07:30:00+07:00');
         let phoneNumbers = [];
         let usersData = [];
-        // call api get list phone number
+        
+        // Gọi trực tiếp Google Sheets API với CORS proxy
         const getListPhoneNumber = async () => {
             try {
-                const API_KEY = config.GOOGLE_SHEETS.API_KEY;
-                const SPREADSHEET_ID = config.GOOGLE_SHEETS.SPREADSHEET_ID;
-                const RANGE = config.GOOGLE_SHEETS.RANGE;
-
                 console.log('Fetching data from Google Sheets...');
-                const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`);
+                
+                // Kiểm tra config có sẵn không
+                if (!config || !config.GOOGLE_SHEETS) {
+                    throw new Error('Config not loaded properly');
+                }
+                
+                const { API_KEY, SPREADSHEET_ID, RANGE } = config.GOOGLE_SHEETS;
+                
+                // Sử dụng CORS proxy để tránh lỗi CORS trên subdomain
+                const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+                const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+                
+                console.log('Using CORS proxy for subdomain compatibility...');
+                
+                const response = await fetch(corsProxy + sheetsUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const responseData = await response.json();
 
                 if (responseData && responseData.values) {
@@ -210,13 +252,40 @@
                     // Lấy số điện thoại từ cột thứ 5 trong mỗi mảng
                     phoneNumbers = responseData.values.map(row => row[4]); // Cột 5 là số điện thoại
                     console.log("Số điện thoại đã được lưu:", phoneNumbers);
+                    console.log("Tổng số người đăng ký:", phoneNumbers.length);
+                    console.log("Dữ liệu mẫu:", responseData.values[0]); // Log dữ liệu mẫu
+                } else {
+                    console.log("Không có dữ liệu từ Google Sheets");
+                    console.log("Response data:", responseData);
                 }
 
             } catch (error) {
-                console.log(error);
-                showNotification('Error fetching data from Google Sheets', 'error');
+                console.error('Error fetching data:', error);
+                showNotification('Lỗi khi tải dữ liệu từ Google Sheets: ' + error.message, 'error');
+                
+                // Fallback: thử gọi trực tiếp nếu CORS proxy lỗi
+                try {
+                    console.log('Trying direct API call as fallback...');
+                    const { API_KEY, SPREADSHEET_ID, RANGE } = config.GOOGLE_SHEETS;
+                    const directResponse = await fetch(
+                        `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`
+                    );
+                    
+                    if (directResponse.ok) {
+                        const directData = await directResponse.json();
+                        if (directData && directData.values) {
+                            usersData = directData.values;
+                            phoneNumbers = directData.values.map(row => row[4]);
+                            console.log("Direct API call successful!");
+                            console.log("Số điện thoại đã được lưu:", phoneNumbers);
+                        }
+                    }
+                } catch (fallbackError) {
+                    console.error('Fallback also failed:', fallbackError);
+                }
             }
         }
+        
         function updateCountdown() {
             const now = new Date();
             const timeLeft = eventDate - now;
@@ -246,7 +315,11 @@
                 secondsElement.style.transform = 'scale(1)';
             }, 100);
         }
+        
+        // Start application
+        console.log('Starting application with direct Google Sheets API...');
         getListPhoneNumber();
+        
         // Update countdown every second
         setInterval(updateCountdown, 1000);
         updateCountdown(); // Initial call

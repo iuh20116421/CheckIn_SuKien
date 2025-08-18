@@ -1,9 +1,13 @@
 {
-  "version": 2,
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/checkin.html"
+      "source": "/api/sheets",
+      "destination": "/api/sheets.js"
     }
-  ]
+  ],
+  "functions": {
+    "api/sheets.js": {
+      "maxDuration": 10
+    }
+  }
 }

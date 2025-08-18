@@ -1268,7 +1268,7 @@ body::after {
 }
 
 .back-btn {
-    background: linear-gradient(135deg, #00ffff, #0080ff);
+    background: linear-gradient(135deg, #00fbff, #0080ff);
     color: #000;
     border: none;
     padding: 15px 30px;

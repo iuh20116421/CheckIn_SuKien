@@ -3,6 +3,10 @@
     {
       "source": "/api/sheets",
       "destination": "/api/sheets.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/checkin.html"
     }
   ],
   "functions": {

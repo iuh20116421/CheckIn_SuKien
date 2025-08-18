@@ -1,86 +1,154 @@
-# AI Ecommerce 2025 - Hệ Thống Check-in
+# Check-in Event System
 
-## Mô tả
-Hệ thống check-in thông minh cho sự kiện AI Ecommerce 2025 - countdown timer và chuyển đổi form tự động theo thời gian.
+Hệ thống check-in sự kiện với giao diện đẹp và tính năng hiển thị thông tin chi tiết khách hàng.
 
-## Tính năng chính
-- ✅ Countdown timer đến thời gian sự kiện
-- ✅ Chuyển đổi tự động từ countdown sang form check-in
-- ✅ Logo AI Ecommerce với thiết kế đẹp mắt
-- ✅ Form check-in đơn giản với validation
-- ✅ Modal thông báo thành công/lỗi
-- ✅ Giao diện responsive và hiện đại
-- ✅ Background gradient đẹp mắt
+## Tính năng
 
-## Cách sử dụng
+- ⏰ Đếm ngược thời gian đến sự kiện
+- 📱 Giao diện responsive cho mobile và desktop
+- ✅ Check-in bằng số điện thoại
+- 📊 Hiển thị thông tin chi tiết khách hàng
+- 🔄 Tích hợp Google Sheets API
+- 🎨 Giao diện hiện đại với hiệu ứng đẹp mắt
 
-### 1. Mở file
-```bash
-# Mở file HTML trong trình duyệt
-start checkin.html
-```
+## Cấu trúc dự án
 
-### 2. Countdown Timer
-- Hiển thị thời gian còn lại đến sự kiện
-- Tự động chuyển sang form check-in khi đến giờ
-
-### 3. Check-in
-- Nhập mã check-in vào form
-- Nhấn nút "Check-in"
-- Nhận thông báo thành công/lỗi
-
-## Cấu trúc file
 ```
 CheckInEvent/
-├── checkin.html      # File HTML chính
-├── style.css         # File CSS styling
-└── README.md         # Hướng dẫn sử dụng
+├── checkin.html          # File HTML chính
+├── style.css             # File CSS styles
+├── config.js             # File cấu hình (API keys, settings)
+├── .gitignore            # File bỏ qua Git
+├── README.md             # File hướng dẫn
+├── vercel.json           # Cấu hình deploy Vercel
+└── image/                # Thư mục chứa hình ảnh
+    ├── logos.png
+    ├── AiEcommerce.png
+    ├── RobotEcommerce.png
+    └── ...
 ```
 
-## Công nghệ sử dụng
-- HTML5
-- CSS3 (với animations và gradients)
-- JavaScript (ES6+)
-- Google Fonts (Roboto)
-- Countdown Timer tự động
+## Cài đặt và sử dụng
 
-## Deployment lên Vercel
-
-### Cách deploy:
-1. **Push code lên GitHub**
+### 1. Clone dự án
 ```bash
-git add .
-git commit -m "Initial commit"
-git push origin main
+git clone <repository-url>
+cd CheckInEvent
 ```
 
-2. **Deploy trên Vercel**
-- Truy cập [vercel.com](https://vercel.com)
-- Import project từ GitHub
-- Vercel sẽ tự động detect và deploy
+### 2. Cấu hình API Keys
+Chỉnh sửa file `config.js` với thông tin của bạn:
 
-### Cấu hình đã có sẵn:
-- ✅ `vercel.json` - Cấu hình routing và headers
-- ✅ `.gitignore` - Loại trừ file không cần thiết
-- ✅ Responsive design cho mobile
-- ✅ Optimized images (cần compress thêm)
+```javascript
+const config = {
+    GOOGLE_SHEETS: {
+        API_KEY: 'your-google-sheets-api-key',
+        SPREADSHEET_ID: 'your-spreadsheet-id',
+        RANGE: 'SheetName!A2:AZ67'
+    },
+    // ... other config
+};
+```
 
-## Lưu ý
-- Cần kết nối internet để load Google Fonts
-- Hệ thống hoạt động hoàn toàn ở client-side
-- Dữ liệu không được lưu trữ, chỉ hiển thị tạm thời
-- Thời gian sự kiện được set cố định: 17/09/2025
-- Đã thay thế alert() bằng notification modal đẹp mắt
+### 3. Cấu trúc Google Sheets
+Google Sheets cần có cấu trúc như sau:
+- Cột A: Họ tên
+- Cột B: Mã đơn hàng  
+- Cột C: Hạng vé
+- Cột D: Email
+- Cột E: Số điện thoại
+- Cột F: Giá vé (chưa VAT)
+- Cột G: Giá vé (đã VAT)
+- Cột H: Trạng thái
 
-## Tùy chỉnh
-- Thay đổi thời gian sự kiện trong JavaScript (eventDate)
-- Thay đổi màu sắc trong file `style.css`
-- Thêm logo thật bằng cách thay thế `logo-placeholder` trong HTML
-- Có thể kết nối với backend để validate mã check-in thật
+### 4. Chạy dự án
+Mở file `checkin.html` trong trình duyệt hoặc sử dụng local server:
 
-## Tối ưu hóa cho Production
-- ✅ Loại bỏ alert() functions
-- ✅ Thêm proper error handling
-- ✅ Responsive design
-- ⚠️ Cần compress images (robot.png 4.8MB quá lớn)
-- ⚠️ Có thể thêm lazy loading cho images
+```bash
+# Sử dụng Python
+python -m http.server 8000
+
+# Sử dụng Node.js
+npx serve .
+
+# Sử dụng PHP
+php -S localhost:8000
+```
+
+## Bảo mật
+
+### ⚠️ Quan trọng về bảo mật
+
+1. **File config.js đã được thêm vào .gitignore** để bảo vệ API keys
+2. **Không commit file config.js** lên Git repository
+3. **Tạo file config.example.js** để làm mẫu cho team
+
+### Tạo file config.example.js
+```javascript
+const config = {
+    GOOGLE_SHEETS: {
+        API_KEY: 'YOUR_API_KEY_HERE',
+        SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID_HERE',
+        RANGE: 'SheetName!A2:AZ67'
+    },
+    // ... other config
+};
+```
+
+## Tính năng mới
+
+### Hiển thị thông tin khách hàng
+Sau khi check-in thành công:
+- ✅ Hiển thị thông báo thành công
+- 📋 Chuyển sang section hiển thị thông tin chi tiết
+- 🔄 Nút "Quay lại Check-in" để tiếp tục
+
+### Giao diện thông tin khách hàng
+- 🎨 Thiết kế hiện đại với hiệu ứng hover
+- 📱 Responsive cho mọi thiết bị
+- 🎯 Hiển thị đầy đủ thông tin:
+  - Họ tên
+  - Số điện thoại
+  - Email (có thể click để gửi mail)
+  - Hạng vé
+  - Mã đơn hàng
+  - Giá vé (chưa/đã VAT)
+  - Trạng thái thanh toán
+
+## Deploy
+
+### Vercel
+Dự án đã có sẵn file `vercel.json` để deploy lên Vercel:
+
+```bash
+npm install -g vercel
+vercel
+```
+
+### GitHub Pages
+Có thể deploy lên GitHub Pages bằng cách push code lên repository và enable GitHub Pages.
+
+## Troubleshooting
+
+### Lỗi API Google Sheets
+1. Kiểm tra API key có đúng không
+2. Kiểm tra Spreadsheet ID
+3. Kiểm tra quyền truy cập Google Sheets
+4. Kiểm tra CORS nếu chạy local
+
+### Lỗi hiển thị
+1. Kiểm tra console browser để xem lỗi JavaScript
+2. Kiểm tra cấu trúc dữ liệu Google Sheets
+3. Kiểm tra index của các cột trong function `displayCustomerDetails`
+
+## Đóng góp
+
+1. Fork dự án
+2. Tạo branch mới (`git checkout -b feature/AmazingFeature`)
+3. Commit thay đổi (`git commit -m 'Add some AmazingFeature'`)
+4. Push lên branch (`git push origin feature/AmazingFeature`)
+5. Tạo Pull Request
+
+## License
+
+Dự án này được phát hành dưới MIT License.

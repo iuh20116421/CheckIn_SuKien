@@ -164,6 +164,15 @@ body::after {
     }
 }
 
+@keyframes imageGlow {
+    0%, 100% { 
+        filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
+    }
+    50% { 
+        filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.6));
+    }
+}
+
 /* Event Info */
 .event-info {
     margin-bottom: 40px;
@@ -178,6 +187,14 @@ body::after {
     color: #ffffff;
     margin-bottom: 10px;
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.event-title-image {
+    max-width: 50%;
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
+    animation: imageGlow 3s ease-in-out infinite;
 }
 
 .event-subtitle {
@@ -256,6 +273,10 @@ body::after {
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
 }
 
 .countdown-container::before {
@@ -310,12 +331,16 @@ body::after {
     display: flex;
     justify-content: center;
     gap: 20px;
+    align-items: center;
+    overflow-x: auto;
+    padding: 10px 0;
 }
 
 .countdown-item {
     text-align: center;
     width: 120px;
     height: 120px;
+    min-width: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -330,6 +355,7 @@ body::after {
     border: 1px solid rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .countdown-item::before {
@@ -397,7 +423,7 @@ body::after {
 
 .robot-image-section {
     position: absolute;
-    right: -80px;
+    right: 0.5px;
     top: 60%;
     transform: translateY(-50%);
     display: flex;
@@ -408,7 +434,7 @@ body::after {
 }
 
 .robot-image {
-    max-width: 400px;
+    max-width: 300px;
     height: auto;
     filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.4));
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -467,14 +493,14 @@ body::after {
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Courier New', monospace;
-    font-size: 12px;
+    font-size: 14px;
     color: rgba(0, 255, 255, 0.8);
     animation: dataStream 2s linear infinite;
     white-space: nowrap;
 }
 
 .robot-image-section::after {
-    content: 'AI E-COMMERCE';
+    /* content: 'AI E-COMMERCE'; */
     position: absolute;
     bottom: -30px;
     left: 50%;
@@ -845,14 +871,20 @@ body::after {
     .countdown-container {
         padding: 25px;
         border-radius: 20px;
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
     }
     
     .countdown-timer {
         gap: 15px;
+        overflow-x: auto;
+        padding: 10px 0;
     }
     
     .countdown-item {
         min-width: 60px;
+        flex-shrink: 0;
     }
     
     .countdown-number {
@@ -967,15 +999,22 @@ body::after {
     .countdown-container {
         padding: 20px;
         border-radius: 15px;
+        max-width: 95%;
+        margin-left: auto;
+        margin-right: auto;
     }
     
     .countdown-timer {
         gap: 10px;
+        overflow-x: auto;
+        padding: 8px 0;
     }
     
     .countdown-item {
         width: 100px;
         height: 100px;
+        min-width: 80px;
+        flex-shrink: 0;
     }
     
     .countdown-number {
@@ -1071,6 +1110,8 @@ body::after {
     .countdown-item {
         width: 80px;
         height: 80px;
+        min-width: 70px;
+        padding: 15px 10px;
     }
     
     .countdown-number {
@@ -1079,6 +1120,16 @@ body::after {
     
     .countdown-label {
         font-size: 16px;
+    }
+    
+    .countdown-timer {
+        gap: 15px;
+        padding: 5px 0;
+    }
+    
+    .countdown-container {
+        padding: 25px 20px;
+        margin-bottom: 40px;
     }
     
     .checkin-container {
@@ -1109,7 +1160,211 @@ body::after {
     }
 }
 
+/* Customer Details Section Styles */
+.customer-details-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ffffff;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
 
+.customer-details-container {
+    background: rgb(255 255 255 / 10%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 40px;
+    margin: 20px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 0.6s ease-out;
+}
 
+.customer-details-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #00ffff;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    letter-spacing: 2px;
+}
 
+.customer-details-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.detail-row:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(0, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 16px;
+    min-width: 200px;
+    text-align: left;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: #00ffff;
+    font-size: 16px;
+    text-align: right;
+    flex: 1;
+}
+
+.email-link {
+    color: #00ffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.email-link:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+.order-code {
+    color: #ff6b6b !important;
+    font-weight: 700;
+}
+
+.price {
+    font-weight: 700;
+    color: #4ecdc4 !important;
+}
+
+.status-paid {
+    color: #51cf66 !important;
+    font-weight: 700;
+}
+
+.customer-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.back-btn {
+    background: linear-gradient(135deg, #00ffff, #0080ff);
+    color: #000;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.back-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 255, 255, 0.5);
+    background: linear-gradient(135deg, #00ffff, #00bfff);
+}
+
+.back-btn:active {
+    transform: translateY(-1px);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Responsive for Customer Details */
+@media (max-width: 768px) {
+    .customer-details-container {
+        padding: 25px 20px;
+        margin: 15px;
+    }
+    
+    .customer-details-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px 15px;
+    }
+    
+    .detail-label {
+        min-width: auto;
+        font-size: 14px;
+    }
+    
+    .detail-value {
+        font-size: 14px;
+        text-align: left;
+    }
+    
+    .back-btn {
+        padding: 12px 25px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .customer-details-container {
+        padding: 20px 15px;
+        margin: 10px;
+    }
+    
+    .customer-details-title {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .detail-row {
+        padding: 10px 12px;
+        gap: 6px;
+    }
+    
+    .detail-label {
+        font-size: 13px;
+    }
+    
+    .detail-value {
+        font-size: 13px;
+    }
+    
+    .back-btn {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+}
 

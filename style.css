@@ -76,7 +76,8 @@ body::after {
     position: relative;
     align-items: center;
     justify-content: center;
-    /* padding: 20px; */
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 
 /* Countdown and Check-in Sections */
@@ -940,8 +941,10 @@ body::after {
     
     .checkin-container {
         padding: 20px;
-        max-width: 100%;
-        margin: 0 20px;
+        max-width: calc(100% - 40px);
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .robot-image-section {
@@ -1027,8 +1030,10 @@ body::after {
     
     .checkin-container {
         padding: 15px;
-        max-width: 100%;
-        margin: 0 15px;
+        max-width: calc(100% - 30px);
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .robot-image-section {
@@ -1134,7 +1139,10 @@ body::after {
     
     .checkin-container {
         padding: 10px;
-        margin: 0 10px;
+        max-width: calc(100% - 20px);
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .robot-image {

@@ -212,101 +212,7 @@
         let phoneNumbers = [];
         let usersData = [];
         
-                         // Function để xử lý dữ liệu trùng lặp theo SỐ ĐIỆN THOẠI và ưu tiên trạng thái "SUCCESS" từ cột J
-        function processDuplicatePhoneNumbers(data) {
-            
-            // Nhóm dữ liệu theo SỐ ĐIỆN THOẠI (cột E - index 4)
-            const phoneGroups = {};
-            
-            data.forEach((row, index) => {
-                let phone = row[4] || ''; // Số điện thoại (cột E)
-                const paymentStatus = row[9] || ''; // Trạng thái thanh toán (cột J - Financial Status)
-                const paymentTime = row[7] || ''; // Thời gian thanh toán (cột H - paid_at)
-                
-                // Chuẩn hóa số điện thoại (thêm số 0 nếu cần)
-                if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
-                    phone = '0' + phone;
-                }
-                
-                if (phone) { // Chỉ xử lý những row có số điện thoại
-                    if (!phoneGroups[phone]) {
-                        phoneGroups[phone] = [];
-                    }
-                    
-                    phoneGroups[phone].push({
-                        row: row,
-                        index: index,
-                        paymentStatus: paymentStatus,
-                        paymentTime: paymentTime,
-                        originalPhone: row[4] || '' // Giữ số gốc để so sánh
-                    });
-                    
-
-                }
-            });
-            
-
-            
-            // Xử lý từng nhóm số điện thoại
-            const processedData = [];
-            let successCount = 0;
-            let duplicateCount = 0;
-            
-            Object.keys(phoneGroups).forEach(phone => {
-                const group = phoneGroups[phone];
-                
-                if (group.length === 1) {
-                    // Chỉ có 1 record, giữ nguyên
-                    processedData.push(group[0].row);
-                } else {
-                    // Có nhiều record trùng lặp cùng số điện thoại
-                    duplicateCount++;
-                    
-                    // ⚠️ QUAN TRỌNG: Tìm record có trạng thái "SUCCESS" (ƯU TIÊN CAO NHẤT)
-                    // Khi có số điện thoại trùng nhau, PHẢI lấy dòng có trạng thái "SUCCESS" từ cột J
-                    const successRecord = group.find(item => 
-                        item.paymentStatus.toLowerCase() === 'success'
-                    );
-                    
-                    // Nếu không có "SUCCESS", tìm "Paid" hoặc "Completed"
-                    const paidRecord = !successRecord ? group.find(item => 
-                        item.paymentStatus.toLowerCase() === 'paid' || 
-                        item.paymentStatus.toLowerCase() === 'completed'
-                    ) : null;
-                    
-
-                    
-                    if (successRecord) {
-                        // ƯU TIÊN CAO NHẤT: Record có trạng thái "SUCCESS" từ cột J
-                        processedData.push(successRecord.row);
-                        successCount++;
-                    } else if (paidRecord) {
-                        // ƯU TIÊN THỨ 2: Record có trạng thái "Paid/Completed"
-                        processedData.push(paidRecord.row);
-                    } else {
-                        // Fallback: Tìm record có thời gian thanh toán gần nhất
-                        const recordsWithTime = group.filter(item => item.paymentTime);
-                        if (recordsWithTime.length > 0) {
-                            // Sắp xếp theo thời gian thanh toán (mới nhất trước)
-                            recordsWithTime.sort((a, b) => {
-                                const timeA = new Date(a.paymentTime);
-                                const timeB = new Date(b.paymentTime);
-                                return timeB - timeA;
-                            });
-                            
-                            processedData.push(recordsWithTime[0].row);
-                        } else {
-                            // Fallback cuối cùng: Lấy record đầu tiên
-                            processedData.push(group[0].row);
-                        }
-                    }
-                }
-            });
-            
-
-            
-            return processedData;
-        }
+                         
             
          // Gọi trực tiếp Google Sheets API với CORS proxy
          const getListPhoneNumber = async () => {
@@ -331,12 +237,29 @@
                 const responseData = await response.json();
 
                                  if (responseData && responseData.values) {
-                     // Xử lý dữ liệu trùng lặp theo SỐ ĐIỆN THOẠI và ưu tiên trạng thái "SUCCESS" từ cột J
-                     const processedData = processDuplicatePhoneNumbers(responseData.values);
-                     usersData = processedData;
+                     // Load dữ liệu trực tiếp từ Google Sheets
+                     usersData = responseData.values;
                      
-                     // Lấy số điện thoại từ dữ liệu đã xử lý
-                     phoneNumbers = processedData.map(row => {
+                     // Debug: Kiểm tra dữ liệu load được
+                     console.log("=== DEBUG LOAD DATA ===");
+                     console.log("Tổng số records:", responseData.values.length);
+                     
+                     // Tìm records có số 364640379
+                     const debugRecords = responseData.values.filter((row, index) => {
+                         const phone = row[4] || '';
+                         return phone.includes('364640379') || phone.includes('0364640379');
+                     });
+                     console.log("Records có số 364640379:", debugRecords.length);
+                     debugRecords.forEach((row, index) => {
+                         console.log(`Record ${index}:`, {
+                             phone: row[4],
+                             status: row[9],
+                             name: row[2]
+                         });
+                     });
+                     
+                     // Lấy số điện thoại từ dữ liệu gốc
+                     phoneNumbers = responseData.values.map(row => {
                          let phone = row[4] || '';
                          // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
                          if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
@@ -364,10 +287,9 @@
                                          if (directResponse.ok) {
                          const directData = await directResponse.json();
                          if (directData && directData.values) {
-                             // Xử lý dữ liệu trùng lặp theo SỐ ĐIỆN THOẠI và ưu tiên trạng thái "SUCCESS" từ cột J
-                             const processedData = processDuplicatePhoneNumbers(directData.values);
-                             usersData = processedData;
-                             phoneNumbers = processedData.map(row => {
+                             // Load dữ liệu trực tiếp từ Google Sheets
+                             usersData = directData.values;
+                             phoneNumbers = directData.values.map(row => {
                                  let phone = row[4] || '';
                                  // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
                                  if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
@@ -611,69 +533,92 @@
                 }
                 // Debug: Log thông tin để kiểm tra
                 console.log('Số điện thoại nhập vào:', code);
-                console.log('Danh sách số điện thoại đã load:', phoneNumbers);
+                console.log('Tổng số records trong usersData:', usersData.length);
+                
+                // Debug: Tìm tất cả records có chứa số này
+                const debugRecords = usersData.filter((row, index) => {
+                    const phone = row[4] || '';
+                    return phone.includes('364640379') || phone.includes('0364640379');
+                });
+                console.log('=== DEBUG SỐ 364640379 ===');
+                console.log('Records chứa số 364640379:', debugRecords.length);
+                debugRecords.forEach((row, index) => {
+                    console.log(`Record ${index}:`, {
+                        phone: row[4],
+                        status: row[9],
+                        name: row[2],
+                        email: row[3]
+                    });
+                });
                 
                 // Chuẩn hóa số điện thoại để so sánh - sửa lại logic
                 let normalizedCode = code;
                 
-                // Thử tìm kiếm với nhiều format khác nhau và xử lý trùng lặp
+                // Tìm kiếm theo số điện thoại và ưu tiên SUCCESS
                 let found = false;
                 let userIndex = -1;
-                let searchType = '';
                 
                 // Tìm tất cả records có số điện thoại này (cả có 0 và không có 0)
                 const matchingRecords = [];
                 
-                // Thử 1: Tìm chính xác số đã nhập
-                if (phoneNumbers.includes(code)) {
-                    const index = phoneNumbers.indexOf(code);
-                    matchingRecords.push({ index, type: 'chính xác', phone: code });
-                    console.log('Tìm thấy với format gốc:', code);
-                }
+                // Tìm trong usersData trực tiếp theo số điện thoại (cột E - index 4)
+                usersData.forEach((row, index) => {
+                    let phone = row[4] || ''; // Số điện thoại (cột E)
+                    const originalPhone = phone; // Giữ số gốc để debug
+                    
+                    // Chuẩn hóa số điện thoại để so sánh
+                    if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
+                        phone = '0' + phone;
+                    }
+                    
+                    // Debug cho số 364640379
+                    if (originalPhone.includes('364640379') || originalPhone.includes('0364640379')) {
+                        console.log(`🔍 Checking record ${index}:`, {
+                            originalPhone: originalPhone,
+                            normalizedPhone: phone,
+                            inputCode: code,
+                            status: row[9],
+                            name: row[2]
+                        });
+                    }
+                    
+                    // So sánh với số điện thoại nhập vào
+                    if (phone === code || phone === '0' + code || phone === code.slice(1)) {
+                        matchingRecords.push({ index, phone, status: row[9] || '' });
+                        console.log(`✅ Tìm thấy record ${index}: phone=${phone}, status=${row[9]}`);
+                    }
+                });
                 
-                // Thử 2: Nếu nhập số có 0, thử tìm không có 0
-                if (code.startsWith('0') && phoneNumbers.includes(code.slice(1))) {
-                    const index = phoneNumbers.indexOf(code.slice(1));
-                    matchingRecords.push({ index, type: 'bỏ số 0', phone: code.slice(1) });
-                    console.log('Tìm thấy sau khi bỏ số 0:', code.slice(1));
-                }
+                console.log(`Tổng số records tìm thấy: ${matchingRecords.length}`);
                 
-                // Thử 3: Nếu nhập số không có 0, thử tìm có 0
-                if (!code.startsWith('0') && phoneNumbers.includes('0' + code)) {
-                    const index = phoneNumbers.indexOf('0' + code);
-                    matchingRecords.push({ index, type: 'thêm số 0', phone: '0' + code });
-                    console.log('Tìm thấy sau khi thêm số 0:', '0' + code);
-                }
-                
-                // Xử lý trùng lặp và ưu tiên SUCCESS
                 if (matchingRecords.length > 0) {
                     if (matchingRecords.length === 1) {
                         // Chỉ có 1 record, sử dụng luôn
                         found = true;
                         userIndex = matchingRecords[0].index;
-                        searchType = matchingRecords[0].type;
-                        console.log(`✅ Sử dụng record duy nhất: ${searchType}`);
+                        console.log(`✅ Sử dụng record duy nhất: ${matchingRecords[0].phone}`);
                     } else {
                         // Có nhiều records, ưu tiên SUCCESS
                         console.log(`🔄 Phát hiện ${matchingRecords.length} records trùng lặp, ưu tiên SUCCESS...`);
                         
                         // Tìm record có trạng thái SUCCESS
                         const successRecord = matchingRecords.find(record => {
-                            const userInfo = usersData[record.index];
-                            return userInfo[9]?.toLowerCase() === 'success';
+                            const status = (record.status || '').toString().toLowerCase().trim();
+                            console.log(`🔍 Checking status: "${status}" for phone ${record.phone}`);
+                            const isSuccess = status === 'success';
+                            console.log(`   Is SUCCESS? ${isSuccess}`);
+                            return isSuccess;
                         });
                         
                         if (successRecord) {
                             found = true;
                             userIndex = successRecord.index;
-                            searchType = `SUCCESS priority - ${successRecord.type}`;
-                            console.log(`🎯 Ưu tiên record SUCCESS: ${successRecord.type}`);
+                            console.log(`🎯 Ưu tiên record SUCCESS: ${successRecord.phone} - ${successRecord.status}`);
                         } else {
                             // Nếu không có SUCCESS, lấy record đầu tiên
                             found = true;
                             userIndex = matchingRecords[0].index;
-                            searchType = `fallback - ${matchingRecords[0].type}`;
-                            console.log(`⚠️ Không có SUCCESS, sử dụng record đầu tiên: ${matchingRecords[0].type}`);
+                            console.log(`⚠️ Không có SUCCESS, sử dụng record đầu tiên: ${matchingRecords[0].phone}`);
                         }
                     }
                 }

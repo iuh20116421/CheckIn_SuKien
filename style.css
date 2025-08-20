@@ -75,6 +75,7 @@ body::after {
     justify-content: center;
     padding: 0px 20px;
     box-sizing: border-box;
+    margin: 0 auto;
 }
 
 .countdown-section, .checkin-section {
@@ -86,6 +87,8 @@ body::after {
     position: relative;
     z-index: 1;
     text-align: center;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .logo-main img {
@@ -303,11 +306,14 @@ body::after {
 
 .countdown-timer {
     display: flex;
-    justify-content: center;
-    gap: 20px;
+    justify-content: space-between;
+    gap: 10px;
     align-items: center;
     overflow-x: auto;
     padding: 10px 0px;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    width: 100%;
 }
 
 .countdown-item {
@@ -326,7 +332,8 @@ body::after {
     border: 1px solid rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
-    flex-shrink: 0;
+    flex: 1;
+    margin: 0;
 }
 
 .countdown-item::before {
@@ -1023,6 +1030,7 @@ body::after {
 @media (max-width: 768px) {
     #container {
         padding: 10px;
+        max-width: 100%;
     }
 
     .event-title {
@@ -1042,30 +1050,37 @@ body::after {
     }
 
     .countdown-container {
-        padding: 25px;
+        padding: 25px 15px;
         border-radius: 20px;
-        max-width: 90%;
+        max-width: 95%;
         margin-left: auto;
         margin-right: auto;
     }
 
     .countdown-timer {
-        gap: 15px;
+        gap: 8px;
         overflow-x: auto;
         padding: 10px 0px;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        width: 100%;
     }
 
     .countdown-item {
-        min-width: 60px;
-        flex-shrink: 0;
+        width: auto;
+        height: 90px;
+        min-width: 70px;
+        flex: 1;
+        margin: 0;
+        padding: 15px 8px;
     }
 
     .countdown-number {
-        font-size: 28px;
+        font-size: 24px;
     }
 
     .countdown-label {
-        font-size: 20px;
+        font-size: 16px;
     }
 
     .event-details {
@@ -1172,6 +1187,11 @@ body::after {
 }
 
 @media (max-width: 480px) {
+    #container {
+        padding: 5px;
+        max-width: 100%;
+    }
+    
     .event-title {
         font-size: 32px;
     }
@@ -1189,32 +1209,37 @@ body::after {
     }
 
     .countdown-container {
-        padding: 20px;
+        padding: 20px 10px;
         border-radius: 15px;
-        max-width: 95%;
+        max-width: 98%;
         margin-left: auto;
         margin-right: auto;
     }
 
     .countdown-timer {
-        gap: 10px;
+        gap: 5px;
         overflow-x: auto;
         padding: 8px 0px;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        width: 100%;
     }
 
     .countdown-item {
-        width: 100px;
-        height: 100px;
-        min-width: 80px;
-        flex-shrink: 0;
+        width: auto;
+        height: 80px;
+        min-width: 60px;
+        flex: 1;
+        margin: 0;
+        padding: 12px 6px;
     }
 
     .countdown-number {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .countdown-label {
-        font-size: 18px;
+        font-size: 14px;
     }
 
     .checkin-container {
@@ -1317,29 +1342,35 @@ body::after {
         max-width: 95%;
     }
 
-    .countdown-item {
-        width: 80px;
-        height: 80px;
-        min-width: 70px;
-        padding: 15px 10px;
-    }
-
-    .countdown-number {
-        font-size: 20px;
-    }
-
-    .countdown-label {
-        font-size: 16px;
+    .countdown-container {
+        padding: 15px 8px;
+        margin-bottom: 40px;
+        max-width: 99%;
     }
 
     .countdown-timer {
-        gap: 15px;
+        gap: 3px;
         padding: 5px 0px;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        width: 100%;
     }
 
-    .countdown-container {
-        padding: 25px 20px;
-        margin-bottom: 40px;
+    .countdown-item {
+        width: auto;
+        height: 70px;
+        min-width: 50px;
+        flex: 1;
+        margin: 0;
+        padding: 10px 4px;
+    }
+
+    .countdown-number {
+        font-size: 16px;
+    }
+
+    .countdown-label {
+        font-size: 12px;
     }
 
     .checkin-container {

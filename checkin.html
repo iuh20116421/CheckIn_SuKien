@@ -46,61 +46,9 @@
 
 <body>
     <div id="container">
-        <!-- Countdown Section -->
-        <div id="countdownSection" class="countdown-section">
-            <div class="logo">
-                <div class="logo-placeholder">
-                    <div class="logo-main">
-                        <img src="image/logos.png" alt="AI E-COMMERCE REVOLUTION">
-                    </div>
-                </div>
-            </div>
 
-            <div class="event-info">
-                <img src="image/AiEcommerce.png" alt="AI E-COMMERCE REVOLUTION" class="event-title-image">
-            </div>
-
-            <div class="countdown-container">
-                <h4 class="countdown-title">Đếm ngược đến ngày diễn ra sự kiện</h4>
-                <div class="countdown-timer">
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="days">00</div>
-                        <div class="countdown-label">Ngày</div>
-                    </div>
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="hours">00</div>
-                        <div class="countdown-label">Giờ</div>
-                    </div>
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="minutes">00</div>
-                        <div class="countdown-label">Phút</div>
-                    </div>
-                    <div class="countdown-item">
-                        <div class="countdown-number" id="seconds">00</div>
-                        <div class="countdown-label">Giây</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="event-details">
-                <div class="event-date">
-                    <div class="date-main">17.09.2025</div>
-                </div>
-                <div class="event-separator"></div>
-                <div class="event-day-time">
-                    <div class="day-of-week">Thứ Tư</div>
-                    <div class="time-range">7h30 - 17h30</div>
-                </div>
-                <div class="event-separator"></div>
-                <div class="event-location">
-                    <div class="location-main">Trống Đồng Palace</div>
-                    <div class="location-address">489 Hoàng Quốc Việt, p.Nghĩa Đô, Hà Nội</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Check-in Section (Hidden initially) -->
-        <div id="checkinSection" class="checkin-section" style="display: none;">
+        <!-- Check-in Section -->
+        <div id="checkinSection" class="checkin-section">
             <div class="logo">
                 <div class="logo-placeholder">
                     <div class="logo-main">
@@ -215,8 +163,6 @@
     </div>
 
     <script>
-        // Event date: 17.09.2025 at 7:30 AM (Vietnam timezone)
-        const eventDate = new Date('2025-09-17T07:30:00+07:00');
         let phoneNumbers = [];
         let usersData = [];
         
@@ -432,39 +378,13 @@
             }
         }
         
-        function updateCountdown() {
-            const now = new Date();
-            const timeLeft = eventDate - now;
 
-            if (timeLeft <= 0) {
-                // Event has started, show check-in form
-                document.getElementById('countdownSection').style.display = 'none';
-                document.getElementById('checkinSection').style.display = 'block';
-                return;
-            }
-
-            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-            // Update countdown display
-            document.getElementById('days').textContent = days.toString().padStart(2, '0');
-            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-
-            // Add animation effect when seconds change
-            const secondsElement = document.getElementById('seconds');
-            secondsElement.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                secondsElement.style.transform = 'scale(1)';
-            }, 100);
-        }
         
         // Start application
         console.log('Starting application with direct Google Sheets API...');
         getListPhoneNumber();
+        
+
         
         // Thêm function để debug dữ liệu
         window.debugPhoneNumbers = function() {

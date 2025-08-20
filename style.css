@@ -1,16 +1,12 @@
 * {
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
     box-sizing: border-box;
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background: 
-        radial-gradient(circle at 25% 25%, rgba(0, 150, 255, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(255, 0, 150, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(0, 255, 200, 0.2) 0%, transparent 50%),
-        linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #480101 100%);
+    font-family: Roboto, sans-serif;
+    background: radial-gradient(circle at 25% 25%, rgba(0, 150, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255, 0, 150, 0.3) 0%, transparent 50%), radial-gradient(circle, rgba(0, 255, 200, 0.2) 0%, transparent 50%), linear-gradient(135deg, rgb(10, 10, 10) 0%, rgb(26, 26, 46) 25%, rgb(22, 33, 62) 50%, rgb(15, 52, 96) 75%, rgb(72, 1, 1) 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -20,47 +16,48 @@ body {
 }
 
 body::before {
-    content: '';
+    content: "";
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0px;
+    left: 0px;
     width: 100%;
     height: 100%;
-    background: 
-        radial-gradient(2px 2px at 20px 30px, #00ffff, transparent),
-        radial-gradient(2px 2px at 40px 70px, rgba(0, 255, 255, 0.8), transparent),
-        radial-gradient(1px 1px at 90px 40px, #ff00ff, transparent),
-        radial-gradient(1px 1px at 130px 80px, rgba(255, 0, 255, 0.6), transparent),
-        radial-gradient(2px 2px at 160px 30px, #00ff00, transparent),
-        radial-gradient(1px 1px at 200px 50px, rgba(0, 255, 0, 0.7), transparent);
-    background-repeat: repeat;
-    background-size: 200px 100px;
-    animation: sparkle 20s linear infinite;
-    opacity: 0.3;
+    background: radial-gradient(3px 3px at 25px 35px, rgb(255, 255, 255), transparent) 0% 0% / 400px 200px repeat, radial-gradient(2px 2px at 150px 80px, rgba(255, 255, 255, 0.8), transparent) 0% 0% / 350px 180px repeat, radial-gradient(3px 3px at 280px 120px, rgb(240, 240, 240), transparent) 0% 0% / 380px 190px repeat;
+    animation: 20s linear 0s infinite normal none running sparkle;
+    opacity: 0.5;
     z-index: -1;
 }
 
 body::after {
-    content: '';
+    content: "";
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0px;
+    left: 0px;
     width: 100%;
     height: 100%;
-    background: 
-        linear-gradient(90deg, transparent 0%, rgba(0, 255, 255, 0.05) 50%, transparent 100%);
-    animation: scan 8s ease-in-out infinite;
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 255, 0.05) 50%, transparent 100%);
+    animation: 8s ease-in-out 0s infinite normal none running scan;
     z-index: -1;
 }
 
 @keyframes sparkle {
-    0% { transform: translateY(0px); }
-    100% { transform: translateY(-100px); }
+    0% {
+        transform: translateY(0px);
+    }
+
+    100% {
+        transform: translateY(-100px);
+    }
 }
 
 @keyframes scan {
-    0%, 100% { transform: translateX(-100%); }
-    50% { transform: translateX(100%); }
+    0%, 100% {
+        transform: translateX(-100%);
+    }
+
+    50% {
+        transform: translateX(100%);
+    }
 }
 
 #container {
@@ -70,24 +67,22 @@ body::after {
     width: 100%;
     background: transparent;
     min-height: 100vh;
-    border-radius: 0;
+    border-radius: 0px;
     overflow: visible;
     box-shadow: none;
     position: relative;
     align-items: center;
     justify-content: center;
-    padding: 0 20px;
+    padding: 0px 20px;
     box-sizing: border-box;
 }
 
-/* Countdown and Check-in Sections */
-.countdown-section,
-.checkin-section {
+.countdown-section, .checkin-section {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     position: relative;
     z-index: 1;
     text-align: center;
@@ -97,22 +92,19 @@ body::after {
     margin-top: 10px;
     max-width: 200px;
     margin-bottom: 40px;
-    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.5));
-    animation: logoGlow 3s ease-in-out infinite;
-    transition: all 0.3s ease;
+    filter: drop-shadow(rgba(0, 255, 255, 0.5) 0px 0px 20px);
+    animation: 3s ease-in-out 0s infinite normal none running logoGlow;
+    transition: 0.3s;
 }
 
 .logo-main img:hover {
-    filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.8));
+    filter: drop-shadow(rgba(0, 255, 255, 0.8) 0px 0px 30px);
     transform: scale(1.05);
 }
 
 .logo-placeholder {
-    /* margin-top: 15px; */
-    /* margin-bottom: 30px; */
-    /* padding: 10px; */
-    animation: logoGlow 3s ease-in-out infinite;
-    transition: all 0.3s ease;
+    animation: 3s ease-in-out 0s infinite normal none running logoGlow;
+    transition: 0.3s;
 }
 
 .logo-text {
@@ -124,11 +116,9 @@ body::after {
 .logo-bs {
     font-size: 48px;
     font-weight: bold;
-    background: linear-gradient(45deg, #00ffff, #0080ff);
-    -webkit-background-clip: text;
+    background: linear-gradient(45deg, rgb(0, 255, 255), rgb(0, 128, 255)) text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    text-shadow: rgba(0, 255, 255, 0.5) 0px 0px 20px;
 }
 
 .logo-words {
@@ -140,41 +130,42 @@ body::after {
 .beauty {
     font-size: 18px;
     font-weight: 300;
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     margin-bottom: 2px;
 }
 
 .summit {
     font-size: 24px;
     font-weight: 700;
-    color: #ffffff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    color: rgb(255, 255, 255);
+    text-shadow: rgba(255, 255, 255, 0.5) 0px 0px 10px;
 }
 
 .logo-placeholder:hover {
     transform: scale(1.05);
-    border-color: rgba(0, 255, 255, 0.5);   
+    border-color: rgba(0, 255, 255, 0.5);
 }
 
 @keyframes logoGlow {
-    0%, 100% { 
-        filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.5));
+    0%, 100% {
+        filter: drop-shadow(rgba(0, 255, 255, 0.5) 0px 0px 20px);
     }
-    50% { 
-        filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.8));
+
+    50% {
+        filter: drop-shadow(rgba(0, 255, 255, 0.8) 0px 0px 30px);
     }
 }
 
 @keyframes imageGlow {
-    0%, 100% { 
-        filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
+    0%, 100% {
+        filter: drop-shadow(rgba(0, 255, 255, 0.3) 0px 0px 20px);
     }
-    50% { 
-        filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.6));
+
+    50% {
+        filter: drop-shadow(rgba(0, 255, 255, 0.6) 0px 0px 30px);
     }
 }
 
-/* Event Info */
 .event-info {
     margin-bottom: 40px;
     text-align: center;
@@ -185,17 +176,17 @@ body::after {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     margin-bottom: 10px;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    text-shadow: rgba(255, 255, 255, 0.3) 0px 0px 20px;
 }
 
 .event-title-image {
     max-width: 40%;
     height: auto;
     margin-bottom: 20px;
-    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
-    animation: imageGlow 3s ease-in-out infinite;
+    filter: drop-shadow(rgba(0, 255, 255, 0.3) 0px 0px 20px);
+    animation: 3s ease-in-out 0s infinite normal none running imageGlow;
 }
 
 .event-subtitle {
@@ -203,75 +194,61 @@ body::after {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     margin-bottom: 50px;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    text-shadow: rgba(255, 255, 255, 0.3) 0px 0px 15px;
 }
 
 .event-brand {
     font-size: 24px;
     font-weight: 500;
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    text-shadow: rgba(255, 255, 255, 0.3) 0px 0px 10px;
 }
 
 .genai-logo {
     font-size: 72px;
     font-weight: 900;
-    color: #ffffff;
-    text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-    /* margin-bottom: 40px; */
+    color: rgb(255, 255, 255);
+    text-shadow: rgba(255, 255, 255, 0.5) 0px 0px 30px;
     position: relative;
 }
 
 .genai-text {
-    background: linear-gradient(45deg, #ffffff, #f0f0f0);
-    -webkit-background-clip: text;
+    background: linear-gradient(45deg, rgb(255, 255, 255), rgb(240, 240, 240)) text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .genai-a {
-    background: linear-gradient(45deg, #00ffff, #0080ff);
-    -webkit-background-clip: text;
+    background: linear-gradient(45deg, rgb(0, 255, 255), rgb(0, 128, 255)) text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
     position: relative;
 }
 
 .genai-a::after {
-    content: '▲';
+    content: "▲";
     position: absolute;
     top: -10px;
     right: -15px;
     font-size: 24px;
-    color: #00ffff;
-    animation: sparkle 2s ease-in-out infinite;
+    color: rgb(0, 255, 255);
+    animation: 2s ease-in-out 0s infinite normal none running sparkle;
 }
 
 .genai-i {
-    background: linear-gradient(45deg, #ffffff, #f0f0f0);
-    -webkit-background-clip: text;
+    background: linear-gradient(45deg, rgb(255, 255, 255), rgb(240, 240, 240)) text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
-/* Countdown Timer */
 .countdown-container {
-    background: linear-gradient(135deg, 
-        rgba(0, 255, 255, 0.1) 0%, 
-        rgba(0, 128, 255, 0.15) 50%, 
-        rgba(0, 255, 255, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 128, 255, 0.15) 50%, rgba(0, 255, 255, 0.1) 100%);
     backdrop-filter: blur(20px);
     border: 2px solid rgba(0, 255, 255, 0.3);
     border-radius: 25px;
     padding: 40px;
     margin-bottom: 70px;
-    box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(0, 255, 255, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 20px 40px, rgba(0, 255, 255, 0.1) 0px 0px 0px 1px, rgba(255, 255, 255, 0.1) 0px 1px 0px inset;
     position: relative;
     overflow: hidden;
     max-width: 95%;
@@ -281,51 +258,47 @@ body::after {
 }
 
 .countdown-container::before {
-    content: '';
+    content: "";
     position: absolute;
-    top: 0;
+    top: 0px;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(0, 255, 255, 0.1), 
-        transparent);
-    animation: shimmer 3s ease-in-out infinite;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+    animation: 3s ease-in-out 0s infinite normal none running shimmer;
     z-index: 1;
 }
 
 .countdown-container::after {
-    content: '';
+    content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(0, 128, 255, 0.1) 0%, transparent 50%);
+    inset: 0px;
+    background: radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0, 128, 255, 0.1) 0%, transparent 50%);
     border-radius: 25px;
     z-index: 0;
 }
 
-.countdown-title,
-.countdown-timer {
+.countdown-title, .countdown-timer {
     position: relative;
     z-index: 2;
 }
 
 @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
 }
 
 .countdown-title {
     font-size: 30px;
     font-weight: 600;
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     margin-bottom: 25px;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    text-shadow: rgba(255, 255, 255, 0.3) 0px 0px 10px;
 }
 
 .countdown-timer {
@@ -334,7 +307,7 @@ body::after {
     gap: 20px;
     align-items: center;
     overflow-x: auto;
-    padding: 10px 0;
+    padding: 10px 0px;
 }
 
 .countdown-item {
@@ -349,10 +322,7 @@ body::after {
     background: white;
     border-radius: 15px;
     padding: 20px 15px;
-    box-shadow: 
-        0 8px 25px rgba(255, 107, 107, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: rgba(255, 107, 107, 0.3) 0px 8px 25px, rgba(255, 255, 255, 0.2) 0px 0px 0px 1px, rgba(255, 255, 255, 0.3) 0px 1px 0px inset;
     border: 1px solid rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
@@ -360,17 +330,14 @@ body::after {
 }
 
 .countdown-item::before {
-    content: '';
+    content: "";
     position: absolute;
-    top: 0;
+    top: 0px;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.2) 0%, 
-        rgba(255, 255, 255, 0.1) 50%, 
-        rgba(255, 255, 255, 0.2) 100%);
-    transition: left 0.5s ease;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.2) 100%);
+    transition: left 0.5s;
     z-index: 1;
 }
 
@@ -381,12 +348,9 @@ body::after {
 .countdown-number {
     font-size: 60px;
     font-weight: 700;
-    color: #ffffff;
-    background: #d02c00;
-    -webkit-background-clip: text;
+    color: rgb(255, 255, 255);
+    background: text rgb(208, 44, 0);
     -webkit-text-fill-color: transparent;
-    background-clip: text;
-    /* text-shadow: 0 0 20px rgba(0, 255, 255, 0.5); */
     margin-bottom: 8px;
     position: relative;
     z-index: 2;
@@ -395,24 +359,382 @@ body::after {
 .countdown-label {
     font-size: 24px;
     font-weight: 600;
-    color: #c73c00;
+    color: rgb(199, 60, 0);
     text-transform: uppercase;
     letter-spacing: 1px;
     position: relative;
     z-index: 2;
 }
 
-/* Check-in Form */
 .checkin-container {
-    background: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    padding: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.96) 25%, rgba(241, 245, 249, 0.94) 50%, rgba(248, 250, 252, 0.96) 75%, rgba(255, 255, 255, 0.98) 100%);
+    backdrop-filter: blur(25px);
+    border-width: 2px;
+    border-style: solid;
+    border-color: initial;
+    /* border-image: linear-gradient(45deg, rgba(59, 130, 246, 0.4), rgba(99, 102, 241, 0.4), rgba(139, 92, 246, 0.4), rgba(59, 130, 246, 0.4)) 1 / 1 / 0 stretch; */
+    border-radius: 25px;
+    padding: 40px;
     margin-bottom: 70px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin-left: 10px;
+    margin-right: auto;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 8px 32px, rgba(255, 255, 255, 0.15) 0px 0px 0px 1px inset, rgba(255, 255, 255, 0.2) 0px 1px 0px inset, rgba(59, 130, 246, 0.1) 0px 0px 20px, rgba(99, 102, 241, 0.08) 0px 0px 40px;
     max-width: 600px;
     width: 100%;
     text-align: center;
+    animation: 0.8s ease-out 0s 1 normal none running fadeInUp, 4s ease-in-out 0s infinite normal none running containerFloat;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.checkin-container::before {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15), transparent);
+    animation: 5s ease-in-out 0s infinite normal none running shimmer;
+    z-index: 1;
+}
+
+.checkin-container::after {
+    content: "";
+    position: absolute;
+    inset: 0px;
+    background: radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.06) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 50%), radial-gradient(circle, rgba(139, 92, 246, 0.04) 0%, transparent 50%);
+    border-radius: 25px;
+    z-index: 0;
+}
+
+.checkin-container .particles {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(1.5px 1.5px at 20px 30px, rgba(59, 130, 246, 0.3), transparent), radial-gradient(1.5px 1.5px at 40px 70px, rgba(99, 102, 241, 0.25), transparent), radial-gradient(1px 1px at 90px 40px, rgba(139, 92, 246, 0.3), transparent), radial-gradient(1px 1px at 130px 80px, rgba(59, 130, 246, 0.25), transparent), radial-gradient(1.5px 1.5px at 160px 30px, rgba(99, 102, 241, 0.2), transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: 25s linear 0s infinite normal none running particleFloat;
+    z-index: 0;
+}
+
+.checkin-container .scan-line {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.5), transparent);
+    animation: 4s ease-in-out 0s infinite normal none running scanLine;
+    z-index: 2;
+}
+
+.checkin-container .pulse-glow {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0px;
+    height: 0px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.1), transparent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: 6s ease-in-out 0s infinite normal none running pulseGlow;
+    z-index: 0;
+}
+
+.checkin-container .neon-border {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.3), rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.3));
+    border-radius: 27px;
+    z-index: -1;
+    animation: 4s ease-in-out 0s infinite normal none running neonRotate;
+    filter: blur(2px);
+}
+
+.checkin-title {
+    font-size: 35px;
+    font-weight: 600;
+    background: linear-gradient(45deg, rgb(6 33 211), rgb(32 212 247), rgb(87 5 171), rgb(139, 92, 246)) 0% 0% / 300% 300% text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    animation: 4s ease-in-out 0s infinite normal none running gradientShift, 0.8s ease-out 0s 1 normal none running typingEffect;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.checkin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    padding: 25px;
+    background: rgb(255 255 255 / 63%);
+    border-radius: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    backdrop-filter: blur(15px);
+    box-shadow: rgba(0, 0, 0, 0.06) 0px 8px 32px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.checkin-form:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(59, 130, 246, 0.25);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 12px 40px, rgba(59, 130, 246, 0.2) 0px 0px 0px 1px inset, rgba(59, 130, 246, 0.06) 0px 0px 25px;
+    transform: translateY(-2px);
+}
+
+.checkin-input {
+    width: 100%;
+    padding: 18px 20px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #1a0ce7;
+    border-radius: 30px;
+    font-size: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(250, 250, 255, 0.9));
+    color: rgb(51, 51, 51);
+    outline: none;
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 15px, rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset;
+    position: relative;
+    overflow: hidden;
+}
+
+.checkin-input:focus {
+    box-shadow: rgba(59, 130, 246, 0.25) 0px 0px 20px, rgba(99, 102, 241, 0.15) 0px 0px 40px, rgba(59, 130, 246, 0.25) 0px 0px 0px 1px inset;
+    transform: translateY(-2px) scale(1.01);
+    background: linear-gradient(135deg, rgb(255, 255, 255), rgba(240, 248, 255, 0.95));
+}
+
+.checkin-input::placeholder {
+    color: rgba(107, 114, 128, 0.7);
+    font-style: italic;
+}
+
+.checkin-input::before {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+    transition: left 0.6s;
+    z-index: 1;
+}
+
+.checkin-input:focus::before {
+    left: 100%;
+}
+
+.checkin-btn {
+    width: 100%;
+    padding: 18px 30px;
+    background: linear-gradient(135deg, rgb(185, 28, 28) 0%, rgb(220, 38, 38) 25%, rgb(239, 68, 68) 50%, rgb(245, 101, 101) 75%, rgb(185, 28, 28) 100%) 0% 0% / 300% 300%;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: rgba(239, 68, 68, 0.25) 0px 8px 25px, rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset, rgba(239, 68, 68, 0.15) 0px 0px 20px;
+    text-shadow: rgba(0, 0, 0, 0.3) 0px 2px 4px;
+    z-index: 1;
+    animation: 4s ease-in-out 0s infinite normal none running buttonGlow;
+}
+
+.checkin-btn::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0px;
+    height: 0px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+    z-index: 0;
+}
+
+.checkin-btn:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+.checkin-btn::before {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+    z-index: 1;
+}
+
+.checkin-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: rgba(239, 68, 68, 0.3) 0px 12px 35px, rgba(255, 255, 255, 0.25) 0px 0px 0px 1px inset, rgba(239, 68, 68, 0.2) 0px 0px 25px;
+    background-position: 100% 100%;
+    animation: auto ease 0s 1 normal none running none;
+}
+
+.checkin-btn:hover::before {
+    left: 100%;
+}
+
+.checkin-btn:active {
+    transform: translateY(-1px) scale(0.99);
+    box-shadow: rgba(239, 68, 68, 0.25) 0px 5px 15px, rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset, rgba(239, 68, 68, 0.15) 0px 0px 15px;
+}
+
+.checkin-btn:focus {
+    outline: none;
+    box-shadow: rgba(239, 68, 68, 0.25) 0px 8px 25px, rgba(239, 68, 68, 0.2) 0px 0px 0px 3px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
+}
+
+@keyframes containerFloat {
+    0%, 100% {
+        transform: translateY(0px) rotateX(0deg);
+    }
+
+    25% {
+        transform: translateY(-3px) rotateX(0.5deg);
+    }
+
+    50% {
+        transform: translateY(-5px) rotateX(0deg);
+    }
+
+    75% {
+        transform: translateY(-3px) rotateX(-0.5deg);
+    }
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translateY(0px);
+    }
+
+    100% {
+        transform: translateY(-100px);
+    }
+}
+
+@keyframes scanLine {
+    0% {
+        top: 0px;
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        top: 100%;
+        opacity: 0;
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        width: 0px;
+        height: 0px;
+        opacity: 0.4;
+    }
+
+    50% {
+        width: 250px;
+        height: 250px;
+        opacity: 0;
+    }
+}
+
+@keyframes neonRotate {
+    0% {
+        filter: blur(2px) hue-rotate(0deg);
+    }
+
+    100% {
+        filter: blur(2px) hue-rotate(360deg);
+    }
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes typingEffect {
+    0% {
+        width: 0px;
+        border-right-color: transparent;
+    }
+
+    50% {
+        border-right-color: rgba(59, 130, 246, 0.5);
+    }
+
+    100% {
+        width: 100%;
+        border-right-color: transparent;
+    }
+}
+
+@keyframes buttonGlow {
+    0%, 100% {
+        box-shadow: rgba(239, 68, 68, 0.25) 0px 8px 25px, rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset, rgba(239, 68, 68, 0.15) 0px 0px 20px;
+    }
+
+    50% {
+        box-shadow: rgba(239, 68, 68, 0.35) 0px 8px 25px, rgba(255, 255, 255, 0.25) 0px 0px 0px 1px inset, rgba(239, 68, 68, 0.25) 0px 0px 30px, rgba(59, 130, 246, 0.15) 0px 0px 50px;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        left: 100%;
+        opacity: 0;
+    }
 }
 
 .checkin-section {
@@ -437,48 +759,40 @@ body::after {
 .robot-image {
     max-width: 300px;
     height: auto;
-    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.4));
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    animation: robotFloat 4s ease-in-out infinite;
+    filter: drop-shadow(rgba(0, 255, 255, 0.4) 0px 0px 20px);
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: 4s ease-in-out 0s infinite normal none running robotFloat;
     position: relative;
 }
 
 .robot-image::before {
-    content: '';
+    content: "";
     position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    background: linear-gradient(45deg, 
-        rgba(0, 255, 255, 0.1), 
-        rgba(255, 0, 150, 0.1), 
-        rgba(0, 255, 200, 0.1), 
-        rgba(0, 255, 255, 0.1));
+    inset: -10px;
+    background: linear-gradient(45deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 150, 0.1), rgba(0, 255, 200, 0.1), rgba(0, 255, 255, 0.1));
     border-radius: 50%;
     z-index: -1;
-    animation: robotGlow 3s ease-in-out infinite;
+    animation: 3s ease-in-out 0s infinite normal none running robotGlow;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s;
 }
 
 .robot-image::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 0;
-    height: 0;
+    width: 0px;
+    height: 0px;
     background: radial-gradient(circle, rgba(0, 255, 255, 0.3), transparent);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     z-index: -2;
-    animation: robotPulse 2s ease-in-out infinite;
+    animation: 2s ease-in-out 0s infinite normal none running robotPulse;
 }
 
 .robot-image:hover {
-    filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.8)) 
-            drop-shadow(0 0 60px rgba(255, 0, 150, 0.4));
+    filter: drop-shadow(rgba(0, 255, 255, 0.8) 0px 0px 40px) drop-shadow(rgba(255, 0, 150, 0.4) 0px 0px 60px);
     transform: scale(1.1) rotate(2deg);
 }
 
@@ -486,68 +800,71 @@ body::after {
     opacity: 1;
 }
 
-/* AI Data Stream Effect */
 .robot-image-section::before {
-    content: 'Thích ứng & Dẫn đầu thị trường';
+    content: "Thích ứng & Dẫn đầu thị trường";
     position: absolute;
     top: -30px;
     left: 50%;
     transform: translateX(-50%);
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 14px;
     color: rgba(0, 255, 255, 0.8);
-    animation: dataStream 2s linear infinite;
+    animation: 2s linear 0s infinite normal none running dataStream;
     white-space: nowrap;
 }
 
 .robot-image-section::after {
-    /* content: 'AI E-COMMERCE'; */
     position: absolute;
     bottom: -30px;
     left: 50%;
     transform: translateX(-50%);
-    font-family: 'Roboto', sans-serif;
+    font-family: Roboto, sans-serif;
     font-size: 14px;
     font-weight: 600;
     color: rgba(0, 255, 255, 0.9);
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-    animation: textGlow 2s ease-in-out infinite;
+    text-shadow: rgba(0, 255, 255, 0.5) 0px 0px 10px;
+    animation: 2s ease-in-out 0s infinite normal none running textGlow;
     white-space: nowrap;
 }
 
 @keyframes robotFloat {
-    0%, 100% { 
-        transform: translateY(0px) rotate(0deg); 
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
     }
-    25% { 
-        transform: translateY(-8px) rotate(1deg); 
+
+    25% {
+        transform: translateY(-8px) rotate(1deg);
     }
-    50% { 
-        transform: translateY(-15px) rotate(0deg); 
+
+    50% {
+        transform: translateY(-15px) rotate(0deg);
     }
-    75% { 
-        transform: translateY(-8px) rotate(-1deg); 
+
+    75% {
+        transform: translateY(-8px) rotate(-1deg);
     }
 }
 
 @keyframes robotGlow {
-    0%, 100% { 
+    0%, 100% {
         transform: scale(1) rotate(0deg);
         opacity: 0.3;
     }
-    50% { 
+
+    50% {
         transform: scale(1.2) rotate(180deg);
         opacity: 0.8;
     }
 }
 
 @keyframes robotPulse {
-    0%, 100% { 
-        width: 0;
-        height: 0;
+    0%, 100% {
+        width: 0px;
+        height: 0px;
         opacity: 0.5;
     }
-    50% { 
+
+    50% {
         width: 200px;
         height: 200px;
         opacity: 0;
@@ -555,202 +872,73 @@ body::after {
 }
 
 @keyframes dataStream {
-    0% { 
+    0% {
         transform: translateX(-50%) translateY(0px);
         opacity: 0;
     }
-    20% { 
+
+    20% {
         opacity: 1;
     }
-    80% { 
+
+    80% {
         opacity: 1;
     }
-    100% { 
+
+    100% {
         transform: translateX(-50%) translateY(-20px);
         opacity: 0;
     }
 }
 
 @keyframes textGlow {
-    0%, 100% { 
-        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    0%, 100% {
+        text-shadow: rgba(0, 255, 255, 0.5) 0px 0px 10px;
         transform: translateX(-50%) scale(1);
     }
-    50% { 
-        text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 30px rgba(0, 255, 255, 0.4);
+
+    50% {
+        text-shadow: rgba(0, 255, 255, 0.8) 0px 0px 20px, rgba(0, 255, 255, 0.4) 0px 0px 30px;
         transform: translateX(-50%) scale(1.05);
     }
 }
 
-.checkin-title {
-    font-size: 35px;
-    font-weight: 600;
-    color: #031086;
-    margin-bottom: 25px;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    text-align: center;
-}
-
-.checkin-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-items: center;
-}
-
-.checkin-input {
-    width: 100%;
-    padding: 15px 15px;
-    border: 2px solid rgb(216 8 8);
-    border-radius: 25px;
-    font-size: 20px;
-    background: rgba(255, 255, 255, 0.95);
-    color: #333;
-    outline: none;
-    transition: all 0.3s ease;
-    text-align: center;
-}
-
-.checkin-input:focus {
-    border-color: #0345c8;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-    transform: translateY(-2px);
-}
-
-.checkin-input::placeholder {
-    color: #999;
-}
-
-.checkin-btn {
-    width: 100%;
-    padding: 14px 25px;
-    background: linear-gradient(135deg, #af180e 0%, #f7241e 50%, #bc0505 100%);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    font-size: 24px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 
-        0 8px 25px rgba(255, 107, 53, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    z-index: 1;
-}
-
-.checkin-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
-        transparent);
-    transition: left 0.6s ease;
-    z-index: 1;
-}
-
-.checkin-btn:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 
-        0 15px 35px rgba(255, 107, 53, 0.6),
-        0 0 0 1px rgba(255, 255, 255, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    background: linear-gradient(135deg, #ff7a40 0%, #ffa726 50%, #ff7a40 100%);
-}
-
-.checkin-btn:hover::before {
-    left: 100%;
-}
-
-.checkin-btn:active {
-    transform: translateY(-1px) scale(0.98);
-    box-shadow: 
-        0 5px 15px rgba(255, 107, 53, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.2),
-        inset 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.checkin-btn:focus {
-    outline: none;
-    box-shadow: 
-        0 8px 25px rgba(255, 107, 53, 0.4),
-        0 0 0 3px rgba(255, 107, 53, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-.checkin-btn::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s ease, height 0.6s ease;
-    z-index: 0;
-}
-
-.checkin-btn:active::after {
-    width: 300px;
-    height: 300px;
-}
-
-/* Event Details */
 .event-details {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
     max-width: 1000px;
-    margin: 0 auto;
-    /* margin-top: 40px; */
-    /*  background: linear-gradient(135deg, #533483 0%, #7209b7 100%);
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);*/
+    margin: 0px auto;
 }
 
 .event-date {
     text-align: center;
-    flex: 1;
+    flex: 1 1 0%;
 }
 
 .event-day-time {
     text-align: left;
-    flex: 1;
+    flex: 1 1 0%;
 }
 
 .day-of-week {
     font-size: 36px;
     font-weight: 600;
-    color: #ffffff;
-    /* text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); */
+    color: rgb(255, 255, 255);
 }
 
-.time-range{
+.time-range {
     font-size: 36px;
     font-weight: 600;
-    color: #ffffff;
-    /* text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); */
+    color: rgb(255, 255, 255);
 }
+
 .date-main {
-    margin-left: 0;
+    margin-left: 0px;
     font-size: 54px;
     font-weight: 900;
-    color: #ffffff;
-    /* text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); */
+    color: rgb(255, 255, 255);
     line-height: 1;
     margin-bottom: 5px;
 }
@@ -758,97 +946,77 @@ body::after {
 .date-year {
     font-size: 50px;
     font-weight: 600;
-    color: #ffffff;
-    /* text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); */
+    color: rgb(255, 255, 255);
 }
 
 .event-separator {
     width: 2px;
     height: 80px;
-    background: #ffffff;
-    margin: 0 40px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    background: rgb(255, 255, 255);
+    margin: 0px 40px;
+    box-shadow: rgba(255, 255, 255, 0.3) 0px 0px 10px;
 }
 
 .event-location {
     text-align: left;
-    flex: 1;
+    flex: 1 1 0%;
 }
 
 .location-main {
     font-size: 30px;
     font-weight: 600;
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     margin-bottom: 5px;
-    /* text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); */
 }
 
 .location-sub {
     font-size: 24px;
     font-weight: 500;
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     margin-bottom: 5px;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    text-shadow: rgba(255, 255, 255, 0.3) 0px 0px 10px;
 }
 
 .location-address {
     font-size: 20px;
     font-weight: 400;
-    color: #ffffff;
-    /* text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); */
+    color: rgb(255, 255, 255);
     line-height: 1.4;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Responsive Design */
-
-/* Large Tablets and Small Laptops */
 @media (max-width: 1024px) {
     .robot-image-section {
         right: -20px;
     }
-    
+
     .robot-image {
         max-width: 280px;
     }
-    
+
     .robot-image-section::before {
         font-size: 10px;
         top: -25px;
     }
-    
+
     .robot-image-section::after {
         font-size: 12px;
         bottom: -25px;
     }
-    
+
     .event-title {
         font-size: 48px;
     }
-    
+
     .event-subtitle {
         font-size: 22px;
     }
-    
+
     .checkin-container {
         max-width: 500px;
     }
-    
+
     .event-details {
-        max-width: 800px;
+        max-width: 903px;
     }
 }
 
@@ -856,19 +1024,23 @@ body::after {
     #container {
         padding: 10px;
     }
-    
+
     .event-title {
         font-size: 40px;
     }
-    
+
     .event-subtitle {
         font-size: 20px;
     }
-    
+
     .genai-logo {
         font-size: 56px;
     }
-    
+
+    .event-title-image {
+        max-width: 70%;
+    }
+
     .countdown-container {
         padding: 25px;
         border-radius: 20px;
@@ -876,26 +1048,26 @@ body::after {
         margin-left: auto;
         margin-right: auto;
     }
-    
+
     .countdown-timer {
         gap: 15px;
         overflow-x: auto;
-        padding: 10px 0;
+        padding: 10px 0px;
     }
-    
+
     .countdown-item {
         min-width: 60px;
         flex-shrink: 0;
     }
-    
+
     .countdown-number {
         font-size: 28px;
     }
-    
+
     .countdown-label {
         font-size: 20px;
     }
-    
+
     .event-details {
         flex-direction: column;
         align-items: center;
@@ -904,49 +1076,49 @@ body::after {
         padding: 20px;
         max-width: 100%;
     }
-    
+
     .event-date {
         text-align: center;
     }
-    
+
     .event-day-time {
         text-align: center;
     }
-    
+
     .event-location {
         text-align: center;
     }
-    
+
     .event-separator {
         width: 80%;
         height: 2px;
-        margin: 20px 0;
+        margin: 20px 0px;
     }
-    
+
     .date-main {
         font-size: 40px;
     }
-    
+
     .date-year {
         font-size: 40px;
     }
-    
+
     .location-main {
         font-size: 40px;
     }
-    
+
     .location-address {
         font-size: 40px;
     }
-    
+
     .checkin-container {
-        padding: 20px;
+        padding: 25px 20px;
         max-width: calc(100% - 40px);
-        margin: 0 auto;
+        margin: 0px auto 70px;
         width: 100%;
         box-sizing: border-box;
     }
-    
+
     .robot-image-section {
         position: relative;
         right: auto;
@@ -957,45 +1129,44 @@ body::after {
         z-index: auto;
         padding-top: 30px;
     }
-    
+
     .robot-image {
         max-width: 250px;
     }
-    
-    /* Tối ưu hiệu ứng cho tablet */
-    .robot-image::before,
-    .robot-image::after {
+
+    .robot-image::before, .robot-image::after {
         display: none;
     }
-    
+
     .robot-image-section::before {
-        content: 'Thích ứng & Dẫn đầu thị trường';
+        content: "Thích ứng & Dẫn đầu thị trường";
         position: absolute;
         top: -20px;
         left: 50%;
         transform: translateX(-50%);
-        font-family: 'Courier New', monospace;
+        font-family: "Courier New", monospace;
         font-size: 12px;
         color: rgba(0, 255, 255, 0.8);
-        animation: dataStream 2s linear infinite;
+        animation: 2s linear 0s infinite normal none running dataStream;
         white-space: nowrap;
         z-index: 10;
     }
-    
+
     .robot-image-section::after {
         display: none;
     }
-    
+
     .robot-image {
-        animation: robotFloatTablet 3s ease-in-out infinite;
+        animation: 3s ease-in-out 0s infinite normal none running robotFloatTablet;
     }
-    
+
     @keyframes robotFloatTablet {
-        0%, 100% { 
-            transform: translateY(0px); 
+        0%, 100% {
+            transform: translateY(0px);
         }
-        50% { 
-            transform: translateY(-8px); 
+
+        50% {
+            transform: translateY(-8px);
         }
     }
 }
@@ -1004,15 +1175,19 @@ body::after {
     .event-title {
         font-size: 32px;
     }
-    
+
     .event-subtitle {
         font-size: 18px;
     }
-    
+
     .genai-logo {
         font-size: 48px;
     }
-    
+
+    .event-title-image {
+        max-width: 85%;
+    }
+
     .countdown-container {
         padding: 20px;
         border-radius: 15px;
@@ -1020,36 +1195,36 @@ body::after {
         margin-left: auto;
         margin-right: auto;
     }
-    
+
     .countdown-timer {
         gap: 10px;
         overflow-x: auto;
-        padding: 8px 0;
+        padding: 8px 0px;
     }
-    
+
     .countdown-item {
         width: 100px;
         height: 100px;
         min-width: 80px;
         flex-shrink: 0;
     }
-    
+
     .countdown-number {
         font-size: 24px;
     }
-    
+
     .countdown-label {
         font-size: 18px;
     }
-    
+
     .checkin-container {
-        padding: 15px;
+        padding: 20px 15px;
         max-width: calc(100% - 30px);
-        margin: 0 auto;
+        margin: 0px auto 70px;
         width: 100%;
         box-sizing: border-box;
     }
-    
+
     .robot-image-section {
         position: relative;
         right: auto;
@@ -1059,175 +1234,175 @@ body::after {
         text-align: center;
         padding-top: 25px;
     }
-    
+
     .robot-image {
         max-width: 180px;
     }
-    
+
     .robot-image-section::before {
-        content: 'Thích ứng & Dẫn đầu thị trường';
+        content: "Thích ứng & Dẫn đầu thị trường";
         position: absolute;
         top: -15px;
         left: 50%;
         transform: translateX(-50%);
-        font-family: 'Courier New', monospace;
+        font-family: "Courier New", monospace;
         font-size: 10px;
         color: rgba(0, 255, 255, 0.8);
-        animation: dataStream 2s linear infinite;
+        animation: 2s linear 0s infinite normal none running dataStream;
         white-space: nowrap;
         z-index: 10;
     }
-    
-    /* Tối ưu hiệu ứng cho mobile */
-    .robot-image::before,
-    .robot-image::after {
+
+    .robot-image::before, .robot-image::after {
         display: none;
     }
-    
+
     .robot-image-section::after {
         display: none;
     }
-    
-    /* Giữ lại text Thích ứng & Dẫn đầu thị trường trên mobile */
+
     .robot-image-section::before {
-        content: 'Thích ứng & Dẫn đầu thị trường';
-        font-size: 10px;
+        content: "Thích ứng & Dẫn đầu thị trường";
+        font-size: 15px;
         top: -1px;
         display: block;
     }
-    
+
     .robot-image {
-        animation: robotFloatMobile 2s ease-in-out infinite;
+        animation: 2s ease-in-out 0s infinite normal none running robotFloatMobile;
     }
-    
+
     @keyframes robotFloatMobile {
-        0%, 100% { 
-            transform: translateY(0px); 
+        0%, 100% {
+            transform: translateY(0px);
         }
-        50% { 
-            transform: translateY(-5px); 
+
+        50% {
+            transform: translateY(-5px);
         }
     }
-    
+
     .event-details {
         padding: 15px;
         gap: 15px;
     }
-    
+
     .date-main {
         font-size: 35px;
     }
-    
+
     .date-year {
         font-size: 35px;
     }
-    
+
     .location-main {
         font-size: 28px;
     }
-    
+
     .location-address {
         font-size: 18px;
     }
 }
 
-/* Mobile Small */
 @media (max-width: 360px) {
     .event-title {
         font-size: 28px;
     }
-    
+
     .event-subtitle {
         font-size: 16px;
     }
-    
+
+    .event-title-image {
+        max-width: 95%;
+    }
+
     .countdown-item {
         width: 80px;
         height: 80px;
         min-width: 70px;
         padding: 15px 10px;
     }
-    
+
     .countdown-number {
         font-size: 20px;
     }
-    
+
     .countdown-label {
         font-size: 16px;
     }
-    
+
     .countdown-timer {
         gap: 15px;
-        padding: 5px 0;
+        padding: 5px 0px;
     }
-    
+
     .countdown-container {
         padding: 25px 20px;
         margin-bottom: 40px;
     }
-    
+
     .checkin-container {
-        padding: 10px;
+        padding: 15px 10px;
         max-width: calc(100% - 20px);
-        margin: 0 auto;
+        margin: 0px auto 70px;
         width: 100%;
         box-sizing: border-box;
     }
-    
+
     .robot-image {
         max-width: 140px;
     }
-    
+
     .robot-image-section::before {
         font-size: 10px;
         top: -15px;
     }
-    
+
     .date-main {
         font-size: 30px;
     }
-    
+
     .location-main {
         font-size: 25px;
     }
-    
+
     .event-details {
         padding: 10px;
         gap: 10px;
+        margin-bottom: 20px;
     }
 }
 
-/* Customer Details Section Styles */
 .customer-details-section {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     position: relative;
     z-index: 1;
     text-align: center;
 }
 
 .customer-details-container {
-    background: rgb(255 255 255 / 10%);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
     padding: 40px;
-    margin: 20px;
     max-width: 600px;
     width: 100%;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    animation: fadeInUp 0.6s ease-out;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 32px;
+    animation: 0.6s ease-out 0s 1 normal none running fadeInUp;
 }
 
 .customer-details-title {
     font-size: 32px;
     font-weight: 700;
     margin-bottom: 30px;
-    color: #00ffff;
-    text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    color: rgb(0, 255, 255);
+    text-shadow: rgba(0, 255, 255, 0.5) 0px 0px 20px;
     letter-spacing: 2px;
 }
 
@@ -1246,19 +1421,19 @@ body::after {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    transition: 0.3s;
 }
 
 .detail-row:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(0, 255, 255, 0.3);
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+    box-shadow: rgba(0, 255, 255, 0.2) 0px 4px 15px;
 }
 
 .detail-label {
     font-weight: 600;
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     font-size: 16px;
     min-width: 200px;
     text-align: left;
@@ -1266,35 +1441,35 @@ body::after {
 
 .detail-value {
     font-weight: 500;
-    color: #00ffff;
+    color: rgb(0, 255, 255);
     font-size: 16px;
     text-align: right;
-    flex: 1;
+    flex: 1 1 0%;
 }
 
 .email-link {
-    color: #00ffff;
+    color: rgb(0, 255, 255);
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: 0.3s;
 }
 
 .email-link:hover {
-    color: #ffffff;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    color: rgb(255, 255, 255);
+    text-shadow: rgba(0, 255, 255, 0.8) 0px 0px 10px;
 }
 
 .order-code {
-    color: #ff6b6b !important;
+    color: rgb(255, 107, 107) !important;
     font-weight: 700;
 }
 
 .price {
     font-weight: 700;
-    color: #4ecdc4 !important;
+    color: rgb(78, 205, 196) !important;
 }
 
 .status-paid {
-    color: #51cf66 !important;
+    color: rgb(81, 207, 102) !important;
     font-weight: 700;
 }
 
@@ -1305,24 +1480,24 @@ body::after {
 }
 
 .back-btn {
-    background: linear-gradient(135deg, #00fbff, #0080ff);
-    color: #000;
+    background: linear-gradient(135deg, rgb(0, 251, 255), rgb(0, 128, 255));
+    color: rgb(0, 0, 0);
     border: none;
     padding: 15px 30px;
     border-radius: 25px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    transition: 0.3s;
+    box-shadow: rgba(0, 255, 255, 0.3) 0px 4px 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .back-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 255, 255, 0.5);
-    background: linear-gradient(135deg, #00ffff, #00bfff);
+    box-shadow: rgba(0, 255, 255, 0.5) 0px 6px 20px;
+    background: linear-gradient(135deg, rgb(0, 255, 255), rgb(0, 191, 255));
 }
 
 .back-btn:active {
@@ -1330,45 +1505,45 @@ body::after {
 }
 
 @keyframes fadeInUp {
-    from {
+    0% {
         opacity: 0;
         transform: translateY(30px);
     }
-    to {
+
+    100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0px);
     }
 }
 
-/* Mobile Responsive for Customer Details */
 @media (max-width: 768px) {
     .customer-details-container {
         padding: 25px 20px;
-        margin: 15px;
+        margin: 15px auto;
     }
-    
+
     .customer-details-title {
         font-size: 24px;
         margin-bottom: 20px;
     }
-    
+
     .detail-row {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
         padding: 12px 15px;
     }
-    
+
     .detail-label {
         min-width: auto;
         font-size: 14px;
     }
-    
+
     .detail-value {
         font-size: 14px;
         text-align: left;
     }
-    
+
     .back-btn {
         padding: 12px 25px;
         font-size: 14px;
@@ -1378,30 +1553,29 @@ body::after {
 @media (max-width: 480px) {
     .customer-details-container {
         padding: 20px 15px;
-        margin: 10px;
+        margin: 10px auto;
     }
-    
+
     .customer-details-title {
         font-size: 20px;
         margin-bottom: 15px;
     }
-    
+
     .detail-row {
         padding: 10px 12px;
         gap: 6px;
     }
-    
+
     .detail-label {
         font-size: 13px;
     }
-    
+
     .detail-value {
         font-size: 13px;
     }
-    
+
     .back-btn {
         padding: 10px 20px;
         font-size: 13px;
     }
 }
-

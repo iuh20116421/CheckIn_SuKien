@@ -214,8 +214,135 @@
         let phoneNumbers = [];
         let usersData = [];
         
-        // Gọi trực tiếp Google Sheets API với CORS proxy
-        const getListPhoneNumber = async () => {
+                         // Function để xử lý dữ liệu trùng lặp theo SỐ ĐIỆN THOẠI và ưu tiên trạng thái "SUCCESS" từ cột J
+        function processDuplicatePhoneNumbers(data) {
+            console.log('🚀 BẮT ĐẦU XỬ LÝ DỮ LIỆU TRÙNG LẶP THEO SỐ ĐIỆN THOẠI VÀ ƯU TIÊN SUCCESS...');
+            
+            // Nhóm dữ liệu theo SỐ ĐIỆN THOẠI (cột E - index 4)
+            const phoneGroups = {};
+            
+            data.forEach((row, index) => {
+                let phone = row[4] || ''; // Số điện thoại (cột E)
+                const paymentStatus = row[9] || ''; // Trạng thái thanh toán (cột J - Financial Status)
+                const paymentTime = row[7] || ''; // Thời gian thanh toán (cột H - paid_at)
+                
+                // Chuẩn hóa số điện thoại (thêm số 0 nếu cần)
+                if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
+                    phone = '0' + phone;
+                }
+                
+                if (phone) { // Chỉ xử lý những row có số điện thoại
+                    if (!phoneGroups[phone]) {
+                        phoneGroups[phone] = [];
+                    }
+                    
+                    phoneGroups[phone].push({
+                        row: row,
+                        index: index,
+                        paymentStatus: paymentStatus,
+                        paymentTime: paymentTime,
+                        originalPhone: row[4] || '' // Giữ số gốc để so sánh
+                    });
+                    
+                    console.log(`📱 Phone ${phone}: Status = "${paymentStatus}", Payment Time = "${paymentTime}"`);
+                }
+            });
+            
+            console.log(`📊 Tổng số nhóm số điện thoại: ${Object.keys(phoneGroups).length}`);
+            
+            // Xử lý từng nhóm số điện thoại
+            const processedData = [];
+            let successCount = 0;
+            let duplicateCount = 0;
+            
+            Object.keys(phoneGroups).forEach(phone => {
+                const group = phoneGroups[phone];
+                
+                if (group.length === 1) {
+                    // Chỉ có 1 record, giữ nguyên
+                    processedData.push(group[0].row);
+                    console.log(`✅ Single phone ${phone}: Status = "${group[0].paymentStatus}"`);
+                } else {
+                    // Có nhiều record trùng lặp cùng số điện thoại
+                    duplicateCount++;
+                    console.log(`🔄 DUPLICATE PHONE DETECTED: Số ${phone} có ${group.length} records trùng lặp!`);
+                    
+                    // ⚠️ QUAN TRỌNG: Tìm record có trạng thái "SUCCESS" (ƯU TIÊN CAO NHẤT)
+                    // Khi có số điện thoại trùng nhau, PHẢI lấy dòng có trạng thái "SUCCESS" từ cột J
+                    const successRecord = group.find(item => 
+                        item.paymentStatus.toLowerCase() === 'success'
+                    );
+                    
+                    // Nếu không có "SUCCESS", tìm "Paid" hoặc "Completed"
+                    const paidRecord = !successRecord ? group.find(item => 
+                        item.paymentStatus.toLowerCase() === 'paid' || 
+                        item.paymentStatus.toLowerCase() === 'completed'
+                    ) : null;
+                    
+                    // Log chi tiết tất cả trạng thái thanh toán trong nhóm
+                    console.log(`📋 Chi tiết trạng thái cho Phone ${phone}:`, group.map((item, idx) => ({
+                        index: idx + 1,
+                        orderId: item.row[0], // Mã đơn hàng
+                        status: item.paymentStatus,
+                        time: item.paymentTime,
+                        isSuccess: item.paymentStatus.toLowerCase() === 'success',
+                        isPaid: item.paymentStatus.toLowerCase() === 'paid' || item.paymentStatus.toLowerCase() === 'completed'
+                    })));
+                    
+                    if (successRecord) {
+                        // ƯU TIÊN CAO NHẤT: Record có trạng thái "SUCCESS" từ cột J
+                        processedData.push(successRecord.row);
+                        successCount++;
+                        console.log(`🎯 SUCCESS PRIORITY: Chọn record SUCCESS cho phone ${phone}`);
+                        console.log(`   ✅ Status: ${successRecord.paymentStatus}`);
+                        console.log(`   🕒 Payment Time: ${successRecord.paymentTime}`);
+                        console.log(`   🆔 Order ID: ${successRecord.row[0]}`);
+                        console.log(`   👤 Customer: ${successRecord.row[2]}`);
+                        console.log(`   📧 Email: ${successRecord.row[3]}`);
+                        console.log(`   🎫 Ticket Class: ${successRecord.row[25]}`);
+                    } else if (paidRecord) {
+                        // ƯU TIÊN THỨ 2: Record có trạng thái "Paid/Completed"
+                        processedData.push(paidRecord.row);
+                        console.log(`💰 PAID PRIORITY: Chọn record PAID cho phone ${phone}`);
+                        console.log(`   ✅ Status: ${paidRecord.paymentStatus}`);
+                        console.log(`   🕒 Payment Time: ${paidRecord.paymentTime}`);
+                        console.log(`   🆔 Order ID: ${paidRecord.row[0]}`);
+                    } else {
+                        // Fallback: Tìm record có thời gian thanh toán gần nhất
+                        const recordsWithTime = group.filter(item => item.paymentTime);
+                        if (recordsWithTime.length > 0) {
+                            // Sắp xếp theo thời gian thanh toán (mới nhất trước)
+                            recordsWithTime.sort((a, b) => {
+                                const timeA = new Date(a.paymentTime);
+                                const timeB = new Date(b.paymentTime);
+                                return timeB - timeA;
+                            });
+                            
+                            processedData.push(recordsWithTime[0].row);
+                            console.log(`⚠️ FALLBACK: Không có Success/Paid, chọn record có thời gian thanh toán gần nhất`);
+                            console.log(`   🕒 Payment Time: ${recordsWithTime[0].paymentTime}`);
+                            console.log(`   🆔 Order ID: ${recordsWithTime[0].row[0]}`);
+                        } else {
+                            // Fallback cuối cùng: Lấy record đầu tiên
+                            processedData.push(group[0].row);
+                            console.log(`⚠️ LAST RESORT: Không có thông tin thanh toán, chọn record đầu tiên`);
+                            console.log(`   🆔 Order ID: ${group[0].row[0]}`);
+                        }
+                    }
+                }
+            });
+            
+            console.log(`🎉 HOÀN THÀNH XỬ LÝ DỮ LIỆU THEO SỐ ĐIỆN THOẠI!`);
+            console.log(`📊 Tổng số records gốc: ${data.length}`);
+            console.log(`📊 Tổng số phones sau xử lý: ${processedData.length}`);
+            console.log(`✅ Số phones có trạng thái SUCCESS: ${successCount}`);
+            console.log(`🔄 Số phones có trùng lặp: ${duplicateCount}`);
+            
+            return processedData;
+        }
+         
+         // Gọi trực tiếp Google Sheets API với CORS proxy
+         const getListPhoneNumber = async () => {
             try {
                 console.log('Fetching data from Google Sheets...');
                 
@@ -240,20 +367,23 @@
                 
                 const responseData = await response.json();
 
-                if (responseData && responseData.values) {
-                    usersData = responseData.values;
-                    // Lấy số điện thoại từ cột thứ 5 trong mỗi mảng và thêm số 0 ở đầu nếu cần
-                    phoneNumbers = responseData.values.map(row => {
-                        let phone = row[4] || '';
-                        // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
-                        if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
-                            phone = '0' + phone;
-                        }
-                        return phone;
-                    });
-                    console.log("Số điện thoại đã được lưu:", phoneNumbers);
-                    console.log("Tổng số người đăng ký:", phoneNumbers.length);
-                    console.log("Dữ liệu mẫu:", responseData.values[0]); // Log dữ liệu mẫu
+                                 if (responseData && responseData.values) {
+                     // Xử lý dữ liệu trùng lặp theo SỐ ĐIỆN THOẠI và ưu tiên trạng thái "SUCCESS" từ cột J
+                     const processedData = processDuplicatePhoneNumbers(responseData.values);
+                     usersData = processedData;
+                     
+                     // Lấy số điện thoại từ dữ liệu đã xử lý
+                     phoneNumbers = processedData.map(row => {
+                         let phone = row[4] || '';
+                         // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
+                         if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
+                             phone = '0' + phone;
+                         }
+                         return phone;
+                     });
+                     console.log("Số điện thoại đã được lưu:", phoneNumbers);
+                     console.log("Tổng số người đăng ký:", phoneNumbers.length);
+                     console.log("Dữ liệu mẫu:", processedData[0]); // Log dữ liệu mẫu
                 } else {
                     console.log("Không có dữ liệu từ Google Sheets");
                     console.log("Response data:", responseData);
@@ -272,20 +402,22 @@
                         `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`
                     );
                     
-                    if (directResponse.ok) {
-                        const directData = await directResponse.json();
-                        if (directData && directData.values) {
-                            usersData = directData.values;
-                            phoneNumbers = directData.values.map(row => {
-                                let phone = row[4] || '';
-                                // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
-                                if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
-                                    phone = '0' + phone;
-                                }
-                                return phone;
-                            });
-                            console.log("Direct API call successful!");
-                            console.log("Số điện thoại đã được lưu:", phoneNumbers);
+                                         if (directResponse.ok) {
+                         const directData = await directResponse.json();
+                         if (directData && directData.values) {
+                             // Xử lý dữ liệu trùng lặp theo SỐ ĐIỆN THOẠI và ưu tiên trạng thái "SUCCESS" từ cột J
+                             const processedData = processDuplicatePhoneNumbers(directData.values);
+                             usersData = processedData;
+                             phoneNumbers = processedData.map(row => {
+                                 let phone = row[4] || '';
+                                 // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
+                                 if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
+                                     phone = '0' + phone;
+                                 }
+                                 return phone;
+                             });
+                             console.log("Direct API call successful!");
+                             console.log("Số điện thoại đã được lưu:", phoneNumbers);
                         }
                     }
                 } catch (fallbackError) {
@@ -336,6 +468,238 @@
             console.log('Dữ liệu mẫu (5 người đầu):', usersData.slice(0, 5));
             console.log('==========================');
         };
+
+        // Function kiểm tra dữ liệu tổng quát
+        window.checkDataIntegrity = function() {
+            console.log('🔍 KIỂM TRA TÍNH TOÀN VẸN DỮ LIỆU...');
+            
+            if (!usersData || usersData.length === 0) {
+                console.log('❌ usersData rỗng hoặc không tồn tại');
+                return;
+            }
+            
+            if (!phoneNumbers || phoneNumbers.length === 0) {
+                console.log('❌ phoneNumbers rỗng hoặc không tồn tại');
+                return;
+            }
+            
+            console.log('✅ Dữ liệu cơ bản OK');
+            console.log(`📊 Tổng số records: ${usersData.length}`);
+            console.log(`📱 Tổng số số điện thoại: ${phoneNumbers.length}`);
+            
+            // Kiểm tra xem có số điện thoại nào bị null/undefined không
+            const invalidPhones = phoneNumbers.filter(phone => !phone || phone === '');
+            if (invalidPhones.length > 0) {
+                console.log(`⚠️ Có ${invalidPhones.length} số điện thoại bị null/undefined`);
+            }
+            
+            // Kiểm tra xem có số điện thoại nào bị trùng lặp không
+            const duplicatePhones = phoneNumbers.filter((phone, index) => phoneNumbers.indexOf(phone) !== index);
+            if (duplicatePhones.length > 0) {
+                console.log(`🔄 Có ${duplicatePhones.length} số điện thoại bị trùng lặp:`, duplicatePhones);
+            }
+            
+            // Kiểm tra một số records mẫu
+            console.log('\n📋 KIỂM TRA RECORDS MẪU:');
+            usersData.slice(0, 3).forEach((record, index) => {
+                console.log(`Record ${index + 1}:`);
+                console.log(`  - Order ID: ${record[0]}`);
+                console.log(`  - Phone: ${record[4]}`);
+                console.log(`  - Payment Status: ${record[9]}`);
+                console.log(`  - Payment Time: ${record[7]}`);
+            });
+            
+            console.log('\n🎯 KIỂM TRA HOÀN THÀNH!');
+        };
+
+        // Function debug đặc biệt cho số điện thoại 866448988
+        window.debugPhone866448988 = function() {
+            console.log('🔍 DEBUG ĐẶC BIỆT CHO SỐ ĐIỆN THOẠI: 866448988...');
+            
+            if (!usersData || usersData.length === 0) {
+                console.log('❌ Chưa có dữ liệu để debug');
+                return;
+            }
+            
+            // Tìm tất cả records có số điện thoại này (cả có 0 và không có 0)
+            const phoneRecords = usersData.filter(order => {
+                let orderPhone = order[4] || '';
+                // Chuẩn hóa số điện thoại để so sánh
+                if (orderPhone && orderPhone.length >= 9 && orderPhone.length <= 10 && !orderPhone.startsWith('0')) {
+                    orderPhone = '0' + orderPhone;
+                }
+                return orderPhone === '0866448988' || orderPhone === '866448988';
+            });
+            
+            if (phoneRecords.length === 0) {
+                console.log('❌ KHÔNG TÌM THẤY số điện thoại 866448988 trong dữ liệu!');
+                console.log('📋 Danh sách số điện thoại có sẵn:', phoneNumbers.slice(0, 20));
+                return;
+            }
+            
+            console.log(`✅ Tìm thấy ${phoneRecords.length} records cho số điện thoại 866448988`);
+            
+            // Hiển thị chi tiết từng record
+            phoneRecords.forEach((record, index) => {
+                console.log(`\n📋 Record ${index + 1} cho Phone 866448988:`);
+                console.log(`   🆔 Mã đơn hàng: ${record[0]}`);
+                console.log(`   👤 Họ tên: ${record[2]}`);
+                console.log(`   📧 Email: ${record[3]}`);
+                console.log(`   📱 SĐT: ${record[4]}`);
+                console.log(`   🕒 Thời gian thanh toán: ${record[7]}`);
+                console.log(`   💰 Trạng thái thanh toán: ${record[9]}`);
+                console.log(`   📅 Ngày tạo: ${record[1]}`);
+            });
+            
+            // Kiểm tra logic ưu tiên SUCCESS
+            const successRecord = phoneRecords.find(record => 
+                record[9]?.toLowerCase() === 'success'
+            );
+            
+            if (successRecord) {
+                console.log('\n🎯 PHÁT HIỆN RECORD SUCCESS:');
+                console.log(`   ✅ Status: ${successRecord[9]}`);
+                console.log(`   🕒 Payment Time: ${successRecord[7]}`);
+                console.log(`   👤 Customer: ${successRecord[2]}`);
+                console.log(`   🆔 Order ID: ${successRecord[0]}`);
+            } else {
+                console.log('\n⚠️ KHÔNG CÓ RECORD SUCCESS cho số điện thoại này');
+                console.log('📋 Các trạng thái có sẵn:', phoneRecords.map(r => r[9]));
+            }
+            
+            // Kiểm tra xem có bị trùng lặp không
+            if (phoneRecords.length > 1) {
+                console.log('\n🔄 PHÁT HIỆN TRÙNG LẶP SỐ ĐIỆN THOẠI:');
+                console.log(`   📊 Số records: ${phoneRecords.length}`);
+                console.log(`   🎯 Cần logic ưu tiên SUCCESS để chọn record nào!`);
+            }
+            
+            console.log('\n🎯 DEBUG HOÀN THÀNH!');
+        };
+
+        // Function test check-in trực tiếp cho số 866448988
+        window.testCheckin866448988 = function() {
+            console.log('🧪 TEST CHECK-IN TRỰC TIẾP CHO SỐ 866448988...');
+            
+            if (!usersData || usersData.length === 0) {
+                console.log('❌ Chưa có dữ liệu để test');
+                return;
+            }
+            
+            // Mô phỏng quá trình tìm kiếm
+            const code = '866448988';
+            console.log('🔍 Tìm kiếm số điện thoại:', code);
+            console.log('📱 Danh sách số điện thoại đã load:', phoneNumbers);
+            
+            // Tìm tất cả records có số điện thoại này
+            const matchingRecords = [];
+            
+            // Thử 1: Tìm chính xác số đã nhập
+            if (phoneNumbers.includes(code)) {
+                const index = phoneNumbers.indexOf(code);
+                matchingRecords.push({ index, type: 'chính xác', phone: code });
+                console.log('✅ Tìm thấy với format gốc:', code);
+            }
+            
+            // Thử 2: Nếu nhập số có 0, thử tìm không có 0
+            if (code.startsWith('0') && phoneNumbers.includes(code.slice(1))) {
+                const index = phoneNumbers.indexOf(code.slice(1));
+                matchingRecords.push({ index, type: 'bỏ số 0', phone: code.slice(1) });
+                console.log('✅ Tìm thấy sau khi bỏ số 0:', code.slice(1));
+            }
+            
+            // Thử 3: Nếu nhập số không có 0, thử tìm có 0
+            if (!code.startsWith('0') && phoneNumbers.includes('0' + code)) {
+                const index = phoneNumbers.indexOf('0' + code);
+                matchingRecords.push({ index, type: 'thêm số 0', phone: '0' + code });
+                console.log('✅ Tìm thấy sau khi thêm số 0:', '0' + code);
+            }
+            
+            console.log('\n📊 KẾT QUẢ TÌM KIẾM:');
+            console.log(`Tổng số records tìm thấy: ${matchingRecords.length}`);
+            
+            if (matchingRecords.length === 0) {
+                console.log('❌ KHÔNG TÌM THẤY số điện thoại này trong danh sách!');
+                console.log('🔍 Nguyên nhân có thể:');
+                console.log('   - Số điện thoại không có trong dữ liệu');
+                console.log('   - Format số điện thoại khác nhau');
+                console.log('   - Dữ liệu chưa được load đúng cách');
+                return;
+            }
+            
+            // Xử lý trùng lặp và ưu tiên SUCCESS
+            if (matchingRecords.length === 1) {
+                console.log('✅ Chỉ có 1 record, sử dụng luôn');
+                const record = matchingRecords[0];
+                const userInfo = usersData[record.index];
+                console.log('👤 Thông tin khách hàng:', userInfo);
+                console.log('💰 Trạng thái thanh toán:', userInfo[9]);
+                
+                if (userInfo[9]?.toLowerCase() === 'success') {
+                    console.log('🎯 CHECK-IN THÀNH CÔNG! Trạng thái SUCCESS');
+                } else {
+                    console.log('⚠️ CHECK-IN THẤT BẠI! Trạng thái không phải SUCCESS:', userInfo[9]);
+                }
+            } else {
+                console.log('🔄 Có nhiều records, ưu tiên SUCCESS...');
+                
+                // Tìm record có trạng thái SUCCESS
+                const successRecord = matchingRecords.find(record => {
+                    const userInfo = usersData[record.index];
+                    return userInfo[9]?.toLowerCase() === 'success';
+                });
+                
+                if (successRecord) {
+                    console.log('🎯 Tìm thấy record SUCCESS!');
+                    const userInfo = usersData[successRecord.index];
+                    console.log('👤 Thông tin khách hàng:', userInfo);
+                    console.log('💰 Trạng thái thanh toán:', userInfo[9]);
+                    console.log('🎯 CHECK-IN THÀNH CÔNG!');
+                } else {
+                    console.log('❌ Không có record SUCCESS nào!');
+                    console.log('📋 Các trạng thái có sẵn:', matchingRecords.map(r => {
+                        const userInfo = usersData[r.index];
+                        return `${r.type}: ${userInfo[9]}`;
+                    }));
+                    console.log('⚠️ CHECK-IN THẤT BẠI! Không có trạng thái SUCCESS');
+                }
+            }
+            
+            console.log('\n🧪 TEST HOÀN THÀNH!');
+        };
+
+        // Function kiểm tra tất cả records SUCCESS
+        window.checkAllSuccessRecords = function() {
+            console.log('🔍 KIỂM TRA TẤT CẢ RECORDS SUCCESS...');
+            
+            if (!usersData || usersData.length === 0) {
+                console.log('❌ Chưa có dữ liệu để kiểm tra');
+                return;
+            }
+            
+            // Tìm tất cả records có trạng thái SUCCESS
+            const successRecords = usersData.filter(record => 
+                record[9]?.toLowerCase() === 'success'
+            );
+            
+            console.log(`✅ Tìm thấy ${successRecords.length} records có trạng thái SUCCESS`);
+            
+            if (successRecords.length > 0) {
+                console.log('\n📋 CHI TIẾT CÁC RECORDS SUCCESS:');
+                successRecords.forEach((record, index) => {
+                    console.log(`\n🎯 Record SUCCESS ${index + 1}:`);
+                    console.log(`   🆔 Mã đơn hàng: ${record[0]}`);
+                    console.log(`   👤 Họ tên: ${record[2]}`);
+                    console.log(`   📧 Email: ${record[3]}`);
+                    console.log(`   📱 SĐT: ${record[4]}`);
+                    console.log(`   🕒 Thời gian thanh toán: ${record[7]}`);
+                    console.log(`   💰 Trạng thái thanh toán: ${record[9]}`);
+                    console.log(`   🎫 Hạng vé: ${record[25]}`);
+                });
+            }
+            
+            console.log('\n🎯 KIỂM TRA HOÀN THÀNH!');
+        };
         
         // Update countdown every second
         setInterval(updateCountdown, 1000);
@@ -362,51 +726,101 @@
                 // Chuẩn hóa số điện thoại để so sánh - sửa lại logic
                 let normalizedCode = code;
                 
-                // Thử tìm kiếm với nhiều format khác nhau
+                // Thử tìm kiếm với nhiều format khác nhau và xử lý trùng lặp
                 let found = false;
                 let userIndex = -1;
+                let searchType = '';
+                
+                // Tìm tất cả records có số điện thoại này (cả có 0 và không có 0)
+                const matchingRecords = [];
                 
                 // Thử 1: Tìm chính xác số đã nhập
                 if (phoneNumbers.includes(code)) {
-                    found = true;
-                    userIndex = phoneNumbers.indexOf(code);
+                    const index = phoneNumbers.indexOf(code);
+                    matchingRecords.push({ index, type: 'chính xác', phone: code });
                     console.log('Tìm thấy với format gốc:', code);
                 }
+                
                 // Thử 2: Nếu nhập số có 0, thử tìm không có 0
-                else if (code.startsWith('0') && phoneNumbers.includes(code.slice(1))) {
-                    found = true;
-                    userIndex = phoneNumbers.indexOf(code.slice(1));
+                if (code.startsWith('0') && phoneNumbers.includes(code.slice(1))) {
+                    const index = phoneNumbers.indexOf(code.slice(1));
+                    matchingRecords.push({ index, type: 'bỏ số 0', phone: code.slice(1) });
                     console.log('Tìm thấy sau khi bỏ số 0:', code.slice(1));
                 }
+                
                 // Thử 3: Nếu nhập số không có 0, thử tìm có 0
-                else if (!code.startsWith('0') && phoneNumbers.includes('0' + code)) {
-                    found = true;
-                    userIndex = phoneNumbers.indexOf('0' + code);
+                if (!code.startsWith('0') && phoneNumbers.includes('0' + code)) {
+                    const index = phoneNumbers.indexOf('0' + code);
+                    matchingRecords.push({ index, type: 'thêm số 0', phone: '0' + code });
                     console.log('Tìm thấy sau khi thêm số 0:', '0' + code);
                 }
                 
-                if (found) {
-                    // Tìm thông tin của người đó từ mảng values
-                    const userInfo = usersData[userIndex];
+                // Xử lý trùng lặp và ưu tiên SUCCESS
+                if (matchingRecords.length > 0) {
+                    if (matchingRecords.length === 1) {
+                        // Chỉ có 1 record, sử dụng luôn
+                        found = true;
+                        userIndex = matchingRecords[0].index;
+                        searchType = matchingRecords[0].type;
+                        console.log(`✅ Sử dụng record duy nhất: ${searchType}`);
+                    } else {
+                        // Có nhiều records, ưu tiên SUCCESS
+                        console.log(`🔄 Phát hiện ${matchingRecords.length} records trùng lặp, ưu tiên SUCCESS...`);
+                        
+                        // Tìm record có trạng thái SUCCESS
+                        const successRecord = matchingRecords.find(record => {
+                            const userInfo = usersData[record.index];
+                            return userInfo[9]?.toLowerCase() === 'success';
+                        });
+                        
+                        if (successRecord) {
+                            found = true;
+                            userIndex = successRecord.index;
+                            searchType = `SUCCESS priority - ${successRecord.type}`;
+                            console.log(`🎯 Ưu tiên record SUCCESS: ${successRecord.type}`);
+                        } else {
+                            // Nếu không có SUCCESS, lấy record đầu tiên
+                            found = true;
+                            userIndex = matchingRecords[0].index;
+                            searchType = `fallback - ${matchingRecords[0].type}`;
+                            console.log(`⚠️ Không có SUCCESS, sử dụng record đầu tiên: ${matchingRecords[0].type}`);
+                        }
+                    }
+                }
+                
+                                 if (found) {
+                     // Tìm thông tin của người đó từ mảng values
+                     const userInfo = usersData[userIndex];
+                     const paymentStatus = userInfo[9] || ''; // Trạng thái thanh toán (cột J)
 
-                    console.log("Thông tin người check-in:", userInfo);
+                     console.log("Thông tin người check-in:", userInfo);
+                     console.log("Trạng thái thanh toán:", paymentStatus);
 
-                    // Hiển thị thông báo thành công
-                    showNotification('Check-in thành công! Mã: ' + code, 'success');
-                    
-                    console.log('Bắt đầu chuyển sang màn hình thông tin khách hàng...');
-                    
-                    // Hiển thị thông tin chi tiết khách hàng
-                    displayCustomerDetails(userInfo);
-                    
-                    document.getElementById('checkinCode').value = ''; // Làm sạch ô input
-                    
-                    console.log('Hoàn thành check-in process');
+                     // Kiểm tra trạng thái thanh toán
+                     if (paymentStatus.toLowerCase() === 'pending') {
+                         // Trạng thái Pending - hiển thị thông báo thất bại và nhắc nhở thanh toán
+                         showNotification('Check-in thất bại! Vui lòng hoàn tất thanh toán trước khi check-in.', 'error');
+                         document.getElementById('checkinCode').value = ''; // Làm sạch ô input
+                         return;
+                     }
+
+                     // Trạng thái khác (Success, etc.) - cho phép check-in
+                     showNotification(`Check-in thành công! ${searchType}: ${code}`, 'success');
+                     
+                     console.log(`🎉 Check-in thành công với ${searchType}: ${code}`);
+                     console.log('Bắt đầu chuyển sang màn hình thông tin khách hàng...');
+                     
+                     // Hiển thị thông tin chi tiết khách hàng
+                     displayCustomerDetails(userInfo);
+                     
+                     document.getElementById('checkinCode').value = ''; // Làm sạch ô input
+                     
+                     console.log('Hoàn thành check-in process');
                 } else {
                     console.log('Không tìm thấy số điện thoại trong danh sách');
                     console.log('Số điện thoại đã thử:', code);
                     console.log('Một số số điện thoại trong danh sách:', phoneNumbers.slice(0, 5));
-                    showNotification('Không tìm thông tin người đăng kí trong danh sách!', 'error');
+                    showNotification('Không tìm thấy thông tin người đăng kí trong danh sách!', 'error');
                 }
             });
         });
@@ -477,18 +891,30 @@
               document.getElementById('customerPhone').textContent = phoneDisplay; // SĐT (cột E)
              document.getElementById('customerEmail').textContent = userInfo[3] || '-'; // Email (cột D)
              document.getElementById('customerEmail').href = `mailto:${userInfo[3] || ''}`;
-                           document.getElementById('customerTicketClass').textContent = userInfo[25] || '-'; // Hạng vé (cột Z - Mã SKU - Lineitem sku)
-             document.getElementById('customerOrderCode').textContent = userInfo[0] || '-'; // Mã đơn hàng (cột A)
-             document.getElementById('customerStatus').textContent = userInfo[7] || '-'; // Trạng thái (cột H)
+                                         document.getElementById('customerTicketClass').textContent = userInfo[25] || '-'; // Hạng vé (cột Z - Mã SKU - Lineitem sku)
+              document.getElementById('customerOrderCode').textContent = userInfo[0] || '-'; // Mã đơn hàng (cột A)
+              
+                              // Hiển thị thời gian thanh toán hoặc trạng thái
+                const paymentStatus = userInfo[9] || ''; // Trạng thái thanh toán (cột J)
+                const paymentTime = userInfo[7] || ''; // Thời gian thanh toán (cột H - paid_at)
+              
+              if (paymentStatus.toLowerCase() === 'success' && paymentTime) {
+                  // Nếu đã thanh toán thành công, hiển thị thời gian thanh toán
+                  document.getElementById('customerStatus').textContent = paymentTime;
+              } else {
+                  // Nếu chưa thanh toán hoặc không có thời gian, hiển thị trạng thái
+                  document.getElementById('customerStatus').textContent = paymentStatus || '-';
+              }
             
-                         console.log('Đã cập nhật thông tin khách hàng:', {
-                 name: userInfo[2], // Họ tên (cột C)
-                 phone: userInfo[4], // SĐT (cột E)
-                 email: userInfo[3], // Email (cột D)
-                 ticketClass: userInfo[25], // Hạng vé (cột Z - Mã SKU - Lineitem sku)
-                 orderCode: userInfo[0], // Mã đơn hàng (cột A)
-                 status: userInfo[7] // Trạng thái (cột H)
-             });
+                                                   console.log('Đã cập nhật thông tin khách hàng:', {
+                  name: userInfo[2], // Họ tên (cột C)
+                  phone: userInfo[4], // SĐT (cột E)
+                  email: userInfo[3], // Email (cột D)
+                  ticketClass: userInfo[25], // Hạng vé (cột Z - Mã SKU - Lineitem sku)
+                  orderCode: userInfo[0], // Mã đơn hàng (cột A)
+                  paymentStatus: userInfo[9], // Trạng thái thanh toán (cột J)
+                  paymentTime: userInfo[7] // Thời gian thanh toán (cột H - paid_at)
+              });
             
             // Kiểm tra trạng thái hiển thị sau khi hoàn thành
             setTimeout(() => {

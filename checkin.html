@@ -18,6 +18,12 @@
                 RANGE: 'LadiPage!A2:AZ67'
             },
             
+            // File Google Sheets mới để lưu dữ liệu check-in
+            CHECKIN_SHEET: {
+                SPREADSHEET_ID: 'YOUR_NEW_SPREADSHEET_ID_HERE', // Thay thế bằng ID file mới
+                SHEET_NAME: 'Thông tin KH đã Checkin Sự kiện'
+            },
+            
             // Event Configuration
             EVENT: {
                 DATE: '2025-09-17T07:30:00+07:00',
@@ -538,18 +544,7 @@
             }
             
             console.log(`✅ Tìm thấy ${phoneRecords.length} records cho số điện thoại 866448988`);
-            
-            // Hiển thị chi tiết từng record
-            phoneRecords.forEach((record, index) => {
-                console.log(`\n📋 Record ${index + 1} cho Phone 866448988:`);
-                console.log(`   🆔 Mã đơn hàng: ${record[0]}`);
-                console.log(`   👤 Họ tên: ${record[2]}`);
-                console.log(`   📧 Email: ${record[3]}`);
-                console.log(`   📱 SĐT: ${record[4]}`);
-                console.log(`   🕒 Thời gian thanh toán: ${record[7]}`);
-                console.log(`   💰 Trạng thái thanh toán: ${record[9]}`);
-                console.log(`   📅 Ngày tạo: ${record[1]}`);
-            });
+       
             
             // Kiểm tra logic ưu tiên SUCCESS
             const successRecord = phoneRecords.find(record => 

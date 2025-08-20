@@ -7,7 +7,7 @@
 body {
     font-family: Roboto, sans-serif;
     background: radial-gradient(circle at 25% 25%, rgba(0, 150, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255, 0, 150, 0.3) 0%, transparent 50%), radial-gradient(circle, rgba(0, 255, 200, 0.2) 0%, transparent 50%), linear-gradient(135deg, rgb(10, 10, 10) 0%, rgb(26, 26, 46) 25%, rgb(22, 33, 62) 50%, rgb(15, 52, 96) 75%, rgb(72, 1, 1) 100%);
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-size: cover;
     background-position: center;
     min-height: 100vh;
@@ -19,6 +19,10 @@ body {
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 body::before {
@@ -30,11 +34,15 @@ body::before {
     height: 100%;
     background: radial-gradient(3px 3px at 25px 35px, rgb(255, 255, 255), transparent) 0% 0% / 400px 200px repeat, radial-gradient(2px 2px at 150px 80px, rgba(255, 255, 255, 0.8), transparent) 0% 0% / 350px 180px repeat, radial-gradient(3px 3px at 280px 120px, rgb(240, 240, 240), transparent) 0% 0% / 380px 190px repeat;
     animation: 20s linear 0s infinite normal none running sparkle;
-    opacity: 0.5;
+    opacity: 0.3;
     z-index: -1;
     -webkit-animation: 20s linear 0s infinite normal none running sparkle;
     -moz-animation: 20s linear 0s infinite normal none running sparkle;
     -o-animation: 20s linear 0s infinite normal none running sparkle;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 body::after {
@@ -44,21 +52,25 @@ body::after {
     left: 0px;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 255, 0.05) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 255, 0.03) 50%, transparent 100%);
     animation: 8s ease-in-out 0s infinite normal none running scan;
     z-index: -1;
     -webkit-animation: 8s ease-in-out 0s infinite normal none running scan;
     -moz-animation: 8s ease-in-out 0s infinite normal none running scan;
     -o-animation: 8s ease-in-out 0s infinite normal none running scan;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 @keyframes sparkle {
     0% {
-        transform: translateY(0px);
+        transform: translateY(0px) translateZ(0);
     }
 
     100% {
-        transform: translateY(-100px);
+        transform: translateY(-100px) translateZ(0);
     }
 }
 
@@ -84,11 +96,11 @@ body::after {
 
 @keyframes scan {
     0%, 100% {
-        transform: translateX(-100%);
+        transform: translateX(-100%) translateZ(0);
     }
 
     50% {
-        transform: translateX(100%);
+        transform: translateX(100%) translateZ(0);
     }
 }
 
@@ -128,6 +140,13 @@ body::after {
     padding: 0px 20px;
     box-sizing: border-box;
     margin: 0 auto;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .countdown-section, .checkin-section {
@@ -141,6 +160,13 @@ body::after {
     text-align: center;
     max-width: 100%;
     overflow: visible;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .logo-main img {
@@ -150,6 +176,13 @@ body::after {
     filter: drop-shadow(rgba(0, 255, 255, 0.5) 0px 0px 20px);
     animation: 3s ease-in-out 0s infinite normal none running logoGlow;
     transition: 0.3s;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
     background: transparent !important;
     border: none !important;
     outline: none !important;
@@ -1138,6 +1171,13 @@ body::after {
         background: radial-gradient(circle at 25% 25%, rgba(0, 150, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255, 0, 150, 0.3) 0%, transparent 50%), radial-gradient(circle, rgba(0, 255, 200, 0.2) 0%, transparent 50%), linear-gradient(135deg, rgb(10, 10, 10) 0%, rgb(26, 26, 46) 25%, rgb(22, 33, 62) 50%, rgb(15, 52, 96) 75%, rgb(72, 1, 1) 100%);
         min-height: 100vh;
         overflow-x: hidden;
+        -webkit-transform: translateZ(0);
+        -moz-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        backface-visibility: hidden;
     }
     
     body::before {
@@ -1329,6 +1369,13 @@ body::after {
         background: radial-gradient(circle at 25% 25%, rgba(0, 150, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255, 0, 150, 0.3) 0%, transparent 50%), radial-gradient(circle, rgba(0, 255, 200, 0.2) 0%, transparent 50%), linear-gradient(135deg, rgb(10, 10, 10) 0%, rgb(26, 26, 46) 25%, rgb(22, 33, 62) 50%, rgb(15, 52, 96) 75%, rgb(72, 1, 1) 100%);
         min-height: 100vh;
         overflow-x: hidden;
+        -webkit-transform: translateZ(0);
+        -moz-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        backface-visibility: hidden;
     }
     
     body::before {
@@ -1503,6 +1550,13 @@ body::after {
         background: radial-gradient(circle at 25% 25%, rgba(0, 150, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255, 0, 150, 0.3) 0%, transparent 50%), radial-gradient(circle, rgba(0, 255, 200, 0.2) 0%, transparent 50%), linear-gradient(135deg, rgb(10, 10, 10) 0%, rgb(26, 26, 46) 25%, rgb(22, 33, 62) 50%, rgb(15, 52, 96) 75%, rgb(72, 1, 1) 100%);
         min-height: 100vh;
         overflow-x: hidden;
+        -webkit-transform: translateZ(0);
+        -moz-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        backface-visibility: hidden;
     }
     
     body::before {

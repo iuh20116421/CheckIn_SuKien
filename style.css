@@ -1758,6 +1758,152 @@ body::after {
     font-weight: 700;
 }
 
+/* Màu sắc cho các hạng vé */
+.ticket-class {
+    font-weight: 700;
+    color: #FFFFFF !important; /* Default color */
+    padding: 6px 16px;
+    border-radius: 25px;
+    display: inline-block;
+    text-align: center;
+    min-width: 100px;
+    position: relative;
+    overflow: hidden;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ticket-class::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.ticket-class:hover::before {
+    left: 100%;
+}
+
+.ticket-class:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* SILVER199 - Màu bạc */
+.ticket-class.silver,
+.ticket-class[data-ticket="SILVER199"] {
+    color: #c0c0c0 !important;
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.255), rgba(192, 192, 192, 0.1));
+    border: 1px solid rgba(192, 192, 192, 0.4);
+    box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
+    animation: silverGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes silverGlow {
+    0% { box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3); }
+    100% { box-shadow: 0 4px 25px rgba(192, 192, 192, 0.6); }
+}
+
+/* GOLD299 - Màu vàng */
+.ticket-class.gold,
+.ticket-class[data-ticket="GOLD299"] {
+    color: #FFD700 !important;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    animation: goldShine 3s ease-in-out infinite;
+}
+
+@keyframes goldShine {
+    0%, 100% { 
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 8px 30px rgba(255, 215, 0, 0.6);
+        transform: scale(1.05);
+    }
+}
+
+/* DIAMOND599 - Màu kim cương */
+.ticket-class.diamond,
+.ticket-class[data-ticket="DIAMOND599"] {
+    color: #73e5ff !important;
+    background: linear-gradient(135deg, rgba(153, 230, 247, 0.2), rgba(185, 242, 255, 0.1));
+    border: 1px solid rgba(185, 242, 255, 0.4);
+    box-shadow: 0 4px 15px rgba(185, 242, 255, 0.3);
+    animation: diamondSparkle 4s ease-in-out infinite;
+}
+
+@keyframes diamondSparkle {
+    0%, 100% { 
+        box-shadow: 0 4px 15px rgba(185, 242, 255, 0.3);
+        filter: brightness(1);
+    }
+    25% { 
+        box-shadow: 0 6px 20px rgba(185, 242, 255, 0.5);
+        filter: brightness(1.2);
+    }
+    50% { 
+        box-shadow: 0 8px 25px rgba(185, 242, 255, 0.7);
+        filter: brightness(1.4);
+    }
+    75% { 
+        box-shadow: 0 6px 20px rgba(185, 242, 255, 0.5);
+        filter: brightness(1.2);
+    }
+}
+
+/* VIP999 - Màu đỏ VIP */
+.ticket-class.vip,
+.ticket-class[data-ticket="VIP999"] {
+    color: #FF6B6B !important;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.1));
+    border: 1px solid rgba(255, 107, 107, 0.4);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    animation: vipPulse 2s ease-in-out infinite;
+}
+
+@keyframes vipPulse {
+    0%, 100% { 
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6);
+        transform: scale(1.08);
+    }
+}
+
+/* PLATINUM399 - Màu bạch kim */
+.ticket-class.platinum,
+.ticket-class[data-ticket="PLATINUM399"] {
+    color: #E5E4E2 !important;
+    background: linear-gradient(135deg, rgba(229, 228, 226, 0.2), rgba(229, 228, 226, 0.1));
+    border: 1px solid rgba(229, 228, 226, 0.4);
+    box-shadow: 0 4px 15px rgba(229, 228, 226, 0.3);
+    animation: platinumElegant 5s ease-in-out infinite;
+}
+
+@keyframes platinumElegant {
+    0%, 100% { 
+        box-shadow: 0 4px 15px rgba(229, 228, 226, 0.3);
+        opacity: 1;
+    }
+    50% { 
+        box-shadow: 0 6px 20px rgba(229, 228, 226, 0.5);
+        opacity: 0.9;
+    }
+}
+
 .customer-actions {
     display: flex;
     justify-content: center;
@@ -1832,6 +1978,13 @@ body::after {
     .back-btn {
         padding: 12px 25px;
         font-size: 14px;
+    }
+
+    .ticket-class {
+        padding: 4px 12px;
+        font-size: 13px;
+        min-width: 80px;
+        border-radius: 20px;
     }
 }
 

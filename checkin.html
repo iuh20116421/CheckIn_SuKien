@@ -176,7 +176,7 @@
                     </div>
                                                              <div class="detail-row">
                         <span class="detail-label">Hạng vé:</span>
-                        <span class="detail-value" id="customerTicketClass">-</span>
+                        <span class="detail-value ticket-class" id="customerTicketClass">-</span>
                     </div>
                 </div>
                 <div class="customer-actions">
@@ -695,7 +695,7 @@
                      }
 
                      // Trạng thái khác (Success, etc.) - cho phép check-in
-                     showNotification(`Check-in thành công! ${searchType}: ${code}`, 'success');
+                     showNotification('Check-in thành công!', 'success');
                      
                      // Hiển thị thông tin chi tiết khách hàng
                      displayCustomerDetails(userInfo);
@@ -765,7 +765,13 @@
               document.getElementById('customerPhone').textContent = phoneDisplay; // SĐT (cột E)
              document.getElementById('customerEmail').textContent = userInfo[3] || '-'; // Email (cột D)
              document.getElementById('customerEmail').href = `mailto:${userInfo[3] || ''}`;
-                                         document.getElementById('customerTicketClass').textContent = userInfo[25] || '-'; // Hạng vé (cột Z - Mã SKU - Lineitem sku)
+                                         // Cập nhật hạng vé và áp dụng màu sắc
+             const ticketClass = userInfo[25] || '-';
+             const ticketElement = document.getElementById('customerTicketClass');
+             ticketElement.textContent = ticketClass;
+             
+             // Áp dụng màu sắc dựa trên hạng vé
+             applyTicketClassColor(ticketElement, ticketClass);
              
              // Logic xử lý Mã đơn hàng và Thời gian thanh toán (đã ẩn UI nhưng vẫn giữ logic)
              // document.getElementById('customerOrderCode').textContent = userInfo[0] || '-'; // Mã đơn hàng (cột A)
@@ -822,6 +828,28 @@
             const countdownSection = document.getElementById('countdownSection');
             const checkinSection = document.getElementById('checkinSection');
             const customerDetailsSection = document.getElementById('customerDetailsSection');
+        }
+
+        // Function to apply ticket class color
+        function applyTicketClassColor(element, ticketClass) {
+            // Reset tất cả classes và styles
+            element.className = 'detail-value ticket-class';
+            element.style.background = '';
+            element.style.border = '';
+            element.style.color = '';
+            
+            // Thêm class tương ứng dựa trên hạng vé
+            if (ticketClass.includes('SILVER199')) {
+                element.classList.add('silver');
+            } else if (ticketClass.includes('GOLD299')) {
+                element.classList.add('gold');
+            } else if (ticketClass.includes('DIAMOND599')) {
+                element.classList.add('diamond');
+            } else if (ticketClass.includes('VIP999')) {
+                element.classList.add('vip');
+            } else if (ticketClass.includes('PLATINUM399')) {
+                element.classList.add('platinum');
+            }
         }
 
         // Notification function

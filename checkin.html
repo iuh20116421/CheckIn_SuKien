@@ -174,18 +174,10 @@
                             <a href="#" id="customerEmail" class="email-link">-</a>
                         </span>
                     </div>
-                                         <div class="detail-row">
-                         <span class="detail-label">Hạng vé:</span>
-                         <span class="detail-value" id="customerTicketClass">-</span>
-                     </div>
-                     <div class="detail-row">
-                         <span class="detail-label">Mã đơn hàng:</span>
-                         <span class="detail-value order-code" id="customerOrderCode">-</span>
-                     </div>
-                     <div class="detail-row">
-                         <span class="detail-label">Thời gian thanh toán:</span>
-                         <span class="detail-value status-paid" id="customerStatus">-</span>
-                     </div>
+                                                             <div class="detail-row">
+                        <span class="detail-label">Hạng vé:</span>
+                        <span class="detail-value" id="customerTicketClass">-</span>
+                    </div>
                 </div>
                 <div class="customer-actions">
                     <button class="back-btn" onclick="showCheckinSection()">Check-in người khác</button>
@@ -774,19 +766,22 @@
              document.getElementById('customerEmail').textContent = userInfo[3] || '-'; // Email (cột D)
              document.getElementById('customerEmail').href = `mailto:${userInfo[3] || ''}`;
                                          document.getElementById('customerTicketClass').textContent = userInfo[25] || '-'; // Hạng vé (cột Z - Mã SKU - Lineitem sku)
-              document.getElementById('customerOrderCode').textContent = userInfo[0] || '-'; // Mã đơn hàng (cột A)
-              
-                              // Hiển thị thời gian thanh toán hoặc trạng thái
-                const paymentStatus = userInfo[9] || ''; // Trạng thái thanh toán (cột J)
-                const paymentTime = userInfo[7] || ''; // Thời gian thanh toán (cột H - paid_at)
-              
-              if (paymentStatus.toLowerCase() === 'success' && paymentTime) {
-                  // Nếu đã thanh toán thành công, hiển thị thời gian thanh toán
-                  document.getElementById('customerStatus').textContent = paymentTime;
-              } else {
-                  // Nếu chưa thanh toán hoặc không có thời gian, hiển thị trạng thái
-                  document.getElementById('customerStatus').textContent = paymentStatus || '-';
-              }
+             
+             // Logic xử lý Mã đơn hàng và Thời gian thanh toán (đã ẩn UI nhưng vẫn giữ logic)
+             // document.getElementById('customerOrderCode').textContent = userInfo[0] || '-'; // Mã đơn hàng (cột A)
+             
+             // Hiển thị thời gian thanh toán hoặc trạng thái (đã ẩn UI nhưng vẫn giữ logic)
+             const paymentStatus = userInfo[9] || ''; // Trạng thái thanh toán (cột J)
+             const paymentTime = userInfo[7] || ''; // Thời gian thanh toán (cột H - paid_at)
+             
+             // Logic xử lý payment status (đã ẩn UI nhưng vẫn giữ logic)
+             // if (paymentStatus.toLowerCase() === 'success' && paymentTime) {
+             //     // Nếu đã thanh toán thành công, hiển thị thời gian thanh toán
+             //     document.getElementById('customerStatus').textContent = paymentTime;
+             // } else {
+             //     // Nếu chưa thanh toán hoặc không có thời gian, hiển thị trạng thái
+             //     document.getElementById('customerStatus').textContent = paymentStatus || '-';
+             // }
             
 
             

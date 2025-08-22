@@ -38,24 +38,23 @@ function sendCheckinToGoogleSheet(userInfo, userIndex) {
         }
       };
       
-             // Process ticket type - extract part after "-"
-    //Phần chỉ hiện ticket type ngắn ngọn
-    //    let ticketType = userInfo[21] || '';
-    //    if (ticketType && ticketType.includes('-')) {
-    //      ticketType = ticketType.split('-').pop().trim();
-    //    }
-       
-       // Prepare parameters for JSONP
-       const params = new URLSearchParams({
-         fullName: userInfo[2] || userInfo[26] || '',
-         email: userInfo[3] || '',
-         phoneNumber: userInfo[4] || userInfo[27] || '',
-        //  ticketType: ticketType,
-         ticketType: userInfo[21] || '',
-         userIndex: userIndex,
-         timestamp: new Date().toISOString(),
-         callback: callbackName
-       });
+      // Process ticket type - extract part after "-"
+      // Phần chỉ hiện ticket type ngắn ngọn
+      let ticketType = userInfo[21] || '';
+      if (ticketType && ticketType.includes('-')) {
+        ticketType = ticketType.split('-').pop().trim();
+      }
+      
+      // Prepare parameters for JSONP
+      const params = new URLSearchParams({
+        fullName: userInfo[2] || userInfo[26] || '',
+        email: userInfo[3] || '',
+        phoneNumber: userInfo[4] || userInfo[27] || '',
+        ticketType: ticketType,
+        userIndex: userIndex,
+        timestamp: new Date().toISOString(),
+        callback: callbackName
+      });
       
       // Add userInfo as JSON string for Google Apps Script to parse
       params.append('userInfo', JSON.stringify(userInfo));

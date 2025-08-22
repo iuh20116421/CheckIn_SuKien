@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" href="image/logoTrinhDuyet.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="checkin-integration.js"></script>
     <script>
         // Config tạm thời với API key trực tiếp (để test nhanh)
         let config = {
@@ -18,10 +19,11 @@
                 RANGE: 'LadiPage!A2:AZ300'
             },
             
-            // File Google Sheets mới để lưu dữ liệu check-in
+            // File Google Sheets để lưu dữ liệu check-in
             CHECKIN_SHEET: {
-                SPREADSHEET_ID: 'YOUR_NEW_SPREADSHEET_ID_HERE', // Thay thế bằng ID file mới
-                SHEET_NAME: 'Thông tin KH đã Checkin Sự kiện'
+                API_KEY: 'AIzaSyDW-UUUQc4AFLpO3kMk_lB_RkSF_sHZyo4',
+                SPREADSHEET_ID: '1RrlqM1a4_ypIXUZ_Buyzk27OUzd0LJ3jmLzs26dhGYg',
+                RANGE: 'KHÁCH ĐÃ CHECKIN!A2:AF300'
             },
             
             // Event Configuration
@@ -448,7 +450,7 @@
         // Function test check-in trực tiếp cho số 866448988
         window.testCheckin866448988 = function() {
             console.log('🧪 TEST CHECK-IN TRỰC TIẾP CHO SỐ 866448988...');
-            
+            z
             if (!usersData || usersData.length === 0) {
                 console.log('❌ Chưa có dữ liệu để test');
                 return;
@@ -641,6 +643,9 @@
 
                      // Trạng thái khác (Success, etc.) - cho phép check-in
                      showNotification('Check-in thành công!', 'success');
+                     
+                     // Gửi dữ liệu đến Google Sheet
+                     sendCheckinToGoogleSheet(userInfo, userIndex);
                      
                      // Hiển thị thông tin chi tiết khách hàng
                      displayCustomerDetails(userInfo);

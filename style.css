@@ -1797,6 +1797,84 @@ body::after {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
+/* Layout mới cho hạng vé và số lượng */
+.ticket-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.ticket-row .detail-label {
+    min-width: auto;
+    margin-bottom: 5px;
+}
+
+.ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.ticket-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.ticket-info .ticket-class {
+    margin: 0;
+}
+
+.quantity-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.quantity-box:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(0, 255, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: rgba(0, 255, 255, 0.2) 0px 4px 15px;
+}
+
+.quantity-label {
+    font-weight: 600;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+}
+
+.quantity-value {
+    font-weight: 700;
+    color: rgb(0, 255, 255);
+    font-size: 16px;
+    min-width: 20px;
+    text-align: center;
+    animation: quantityPulse 0.5s ease-in-out;
+}
+
+@keyframes quantityPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+        color: rgb(255, 255, 255);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
 /* SILVER199 - Màu bạc */
 .ticket-class.silver,
 .ticket-class[data-ticket="SILVER199"] {
@@ -1986,6 +2064,29 @@ body::after {
         min-width: 80px;
         border-radius: 20px;
     }
+    
+    .ticket-list {
+        gap: 8px;
+    }
+    
+    .ticket-item {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+    
+    .quantity-box {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .quantity-label {
+        font-size: 12px;
+    }
+    
+    .quantity-value {
+        font-size: 13px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2015,6 +2116,27 @@ body::after {
     .back-btn {
         padding: 10px 20px;
         font-size: 13px;
+    }
+    
+    .ticket-list {
+        gap: 6px;
+    }
+    
+    .ticket-item {
+        gap: 6px;
+    }
+    
+    .quantity-box {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+    
+    .quantity-label {
+        font-size: 11px;
+    }
+    
+    .quantity-value {
+        font-size: 12px;
     }
 }
 

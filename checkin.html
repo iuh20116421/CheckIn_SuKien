@@ -18,14 +18,20 @@
                 SPREADSHEET_ID: '1onh0l-7hZ2JQDr9c4rnkC6QHXALYnvRJGdMOs2Wb8w4',
                 RANGE: 'LadiPage!A2:AZ300'
             },
-            
+
+            GOOGLE_SHEETS_ChotVe: {
+                API_KEY_ChotVe: 'AIzaSyDW-UUUQc4AFLpO3kMk_lB_RkSF_sHZyo4',
+                SPREADSHEET_ID_ChotVe: '1onh0l-7hZ2JQDr9c4rnkC6QHXALYnvRJGdMOs2Wb8w4',
+                RANGE_ChotVe: 'Chốt vé!A1:H7'
+            },
+
             // File Google Sheets để lưu dữ liệu check-in
             CHECKIN_SHEET: {
                 API_KEY: 'AIzaSyDW-UUUQc4AFLpO3kMk_lB_RkSF_sHZyo4',
                 SPREADSHEET_ID: '1RrlqM1a4_ypIXUZ_Buyzk27OUzd0LJ3jmLzs26dhGYg',
                 RANGE: 'KHÁCH ĐÃ CHECKIN!A2:AF300'
             },
-            
+
             // Event Configuration
             EVENT: {
                 DATE: '2025-09-17T07:30:00+07:00',
@@ -33,7 +39,7 @@
                 LOCATION: 'Trống Đồng Palace',
                 ADDRESS: '489 Hoàng Quốc Việt, p.Nghĩa Đô , Hà Nội'
             },
-            
+
             // Application Settings
             APP: {
                 DEBUG: false,
@@ -41,7 +47,7 @@
                 NOTIFICATION_DURATION: 5000
             }
         };
-        
+
 
     </script>
 </head>
@@ -176,9 +182,17 @@
                             <a href="#" id="customerEmail" class="email-link">-</a>
                         </span>
                     </div>
-                                                             <div class="detail-row">
+                    <div class="detail-row ticket-row">
                         <span class="detail-label">Hạng vé:</span>
-                        <span class="detail-value ticket-class" id="customerTicketClass">-</span>
+                        <div class="ticket-list" id="ticketList">
+                            <div class="ticket-item">
+                                <span class="detail-value ticket-class" id="customerTicketClass">-</span>
+                                <div class="quantity-box">
+                                    <span class="quantity-label">SL:</span>
+                                    <span class="quantity-value" id="customerQuantity">-</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="customer-actions">
@@ -213,63 +227,65 @@
         const eventDate = new Date('2025-08-17T07:30:00+07:00');
         let phoneNumbers = [];
         let usersData = [];
-        
-                         
-            
-         // Gọi trực tiếp Google Sheets API với CORS proxy
-         const getListPhoneNumber = async () => {
+
+
+
+        // Gọi trực tiếp Google Sheets API với CORS proxy
+        const getListPhoneNumber = async () => {
             try {
                 // Kiểm tra config có sẵn không
                 if (!config || !config.GOOGLE_SHEETS) {
                     throw new Error('Config not loaded properly');
                 }
-                
+
                 const { API_KEY, SPREADSHEET_ID, RANGE } = config.GOOGLE_SHEETS;
-                
+                const { API_KEY_ChotVe, SPREADSHEET_ID_ChotVe, RANGE_ChotVe } = config.GOOGLE_SHEETS_ChotVe;
+
                 // Sử dụng CORS proxy để tránh lỗi CORS trên subdomain
                 const corsProxy = 'https://cors-anywhere.herokuapp.com/';
                 const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`;
-                
+                const sheetsUrl_ChotVe = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID_ChotVe}/values/${RANGE_ChotVe}?key=${API_KEY_ChotVe}`;
                 const response = await fetch(sheetsUrl);
-                
+                //responst từ sheet Chốt vé
+                const response_ChotVe = await fetch(sheetsUrl_ChotVe);
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
-                const responseData = await response.json();
+                if (!response_ChotVe.ok) {
+                    throw new Error(`HTTP error! status: ${response_ChotVe.status}`);
+                }
 
-                                 if (responseData && responseData.values) {
-                     // Load dữ liệu trực tiếp từ Google Sheets
-                     usersData = responseData.values;
-                     
-                     // Debug: Kiểm tra dữ liệu load được
-                     console.log("=== DEBUG LOAD DATA ===");
-                     console.log("Tổng số records:", responseData.values.length);
-                     
-                     // Tìm records có số 364640379
-                     const debugRecords = responseData.values.filter((row, index) => {
-                         const phone = row[4] || '';
-                         return phone.includes('364640379') || phone.includes('0364640379');
-                     });
-                     console.log("Records có số 364640379:", debugRecords.length);
-                     debugRecords.forEach((row, index) => {
-                         console.log(`Record ${index}:`, {
-                             phone: row[4],
-                             status: row[9],
-                             name: row[2]
-                         });
-                     });
-                     
-                     // Lấy số điện thoại từ dữ liệu gốc
-                     phoneNumbers = responseData.values.map(row => {
-                         let phone = row[4] || '';
-                         // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
-                         if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
-                             phone = '0' + phone;
-                         }
-                         return phone;
-                     });
-                     console.log("Tổng số người đăng ký:", phoneNumbers.length);
+                const responseData = await response.json();
+                const responseData_ChotVe = await response_ChotVe.json();
+
+
+                if (responseData && responseData.values) {
+                    usersData = responseData.values;
+                    usersData_ChotVe = responseData_ChotVe.values;
+                    usersData = [...usersData, ...usersData_ChotVe];
+                    // Debug: Kiểm tra dữ liệu load được
+                    console.log("=== DEBUG LOAD DATA ===");
+                    console.log("Tổng số records 2 sheet:", usersData.length);
+
+                    // Lấy số điện thoại từ dữ liệu gốc
+                    phoneNumbers = responseData.values.map(row => {
+                        let phone = row[4] || '';
+                        // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
+                        if ( !phone.startsWith('0')) {
+                            phone = '0' + phone;
+                        }
+                        return phone;
+                    });
+                    const phoneNumbers_ChotVe = responseData_ChotVe.values.map(row => {
+                        let phone = row[3] || '';
+                        if ( !phone.startsWith('0')) {
+                            phone = '0' + phone;
+                        }
+                        return phone;
+                    });
+                    phoneNumbers = [...phoneNumbers, ...phoneNumbers_ChotVe];
+                    console.log("Tổng số người đăng ký:", phoneNumbers.length);
                 } else {
                     console.log("Không có dữ liệu từ Google Sheets");
                 }
@@ -278,27 +294,27 @@
                 console.error('Error fetching data:', error);
                 // Hide the error notification for Google Sheets loading issues
                 // showNotification('Lỗi khi tải dữ liệu từ Google Sheets: ' + error.message, 'error');
-                
+
                 // Fallback: thử gọi trực tiếp nếu CORS proxy lỗi
                 try {
                     const { API_KEY, SPREADSHEET_ID, RANGE } = config.GOOGLE_SHEETS;
                     const directResponse = await fetch(
                         `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`
                     );
-                    
-                                         if (directResponse.ok) {
-                         const directData = await directResponse.json();
-                         if (directData && directData.values) {
-                             // Load dữ liệu trực tiếp từ Google Sheets
-                             usersData = directData.values;
-                             phoneNumbers = directData.values.map(row => {
-                                 let phone = row[4] || '';
-                                 // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
-                                 if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
-                                     phone = '0' + phone;
-                                 }
-                                 return phone;
-                             });
+
+                    if (directResponse.ok) {
+                        const directData = await directResponse.json();
+                        if (directData && directData.values) {
+                            // Load dữ liệu trực tiếp từ Google Sheets
+                            usersData = directData.values;
+                            phoneNumbers = directData.values.map(row => {
+                                let phone = row[4] || '';
+                                // Thêm số 0 ở đầu nếu chưa có và số điện thoại có 9-10 chữ số
+                                if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
+                                    phone = '0' + phone;
+                                }
+                                return phone;
+                            });
 
                         }
                     }
@@ -307,7 +323,7 @@
                 }
             }
         }
-        
+
         function updateCountdown() {
             const now = new Date();
             const timeLeft = eventDate - now;
@@ -337,12 +353,12 @@
                 secondsElement.style.transform = 'scale(1)';
             }, 100);
         }
-        
+
         // Start application
         getListPhoneNumber();
-        
+
         // Thêm function để debug dữ liệu
-        window.debugPhoneNumbers = function() {
+        window.debugPhoneNumbers = function () {
             console.log('=== DEBUG PHONE NUMBERS ===');
             console.log('Tổng số người đăng ký:', phoneNumbers.length);
             console.log('Danh sách số điện thoại:', phoneNumbers);
@@ -351,35 +367,35 @@
         };
 
         // Function kiểm tra dữ liệu tổng quát
-        window.checkDataIntegrity = function() {
+        window.checkDataIntegrity = function () {
             console.log('🔍 KIỂM TRA TÍNH TOÀN VẸN DỮ LIỆU...');
-            
+
             if (!usersData || usersData.length === 0) {
                 console.log('❌ usersData rỗng hoặc không tồn tại');
                 return;
             }
-            
+
             if (!phoneNumbers || phoneNumbers.length === 0) {
                 console.log('❌ phoneNumbers rỗng hoặc không tồn tại');
                 return;
             }
-            
+
             console.log('✅ Dữ liệu cơ bản OK');
             console.log(`📊 Tổng số records: ${usersData.length}`);
             console.log(`📱 Tổng số số điện thoại: ${phoneNumbers.length}`);
-            
+
             // Kiểm tra xem có số điện thoại nào bị null/undefined không
             const invalidPhones = phoneNumbers.filter(phone => !phone || phone === '');
             if (invalidPhones.length > 0) {
                 console.log(`⚠️ Có ${invalidPhones.length} số điện thoại bị null/undefined`);
             }
-            
+
             // Kiểm tra xem có số điện thoại nào bị trùng lặp không
             const duplicatePhones = phoneNumbers.filter((phone, index) => phoneNumbers.indexOf(phone) !== index);
             if (duplicatePhones.length > 0) {
                 console.log(`🔄 Có ${duplicatePhones.length} số điện thoại bị trùng lặp:`, duplicatePhones);
             }
-            
+
             // Kiểm tra một số records mẫu
             console.log('\n📋 KIỂM TRA RECORDS MẪU:');
             usersData.slice(0, 3).forEach((record, index) => {
@@ -389,19 +405,19 @@
                 console.log(`  - Payment Status: ${record[9]}`);
                 console.log(`  - Payment Time: ${record[7]}`);
             });
-            
+
             console.log('\n🎯 KIỂM TRA HOÀN THÀNH!');
         };
 
         // Function debug đặc biệt cho số điện thoại 866448988
-        window.debugPhone866448988 = function() {
+        window.debugPhone866448988 = function () {
             console.log('🔍 DEBUG ĐẶC BIỆT CHO SỐ ĐIỆN THOẠI: 866448988...');
-            
+
             if (!usersData || usersData.length === 0) {
                 console.log('❌ Chưa có dữ liệu để debug');
                 return;
             }
-            
+
             // Tìm tất cả records có số điện thoại này (cả có 0 và không có 0)
             const phoneRecords = usersData.filter(order => {
                 let orderPhone = order[4] || '';
@@ -411,21 +427,21 @@
                 }
                 return orderPhone === '0866448988' || orderPhone === '866448988';
             });
-            
+
             if (phoneRecords.length === 0) {
                 console.log('❌ KHÔNG TÌM THẤY số điện thoại 866448988 trong dữ liệu!');
                 console.log('📋 Danh sách số điện thoại có sẵn:', phoneNumbers.slice(0, 20));
                 return;
             }
-            
+
             console.log(`✅ Tìm thấy ${phoneRecords.length} records cho số điện thoại 866448988`);
-       
-            
+
+
             // Kiểm tra logic ưu tiên SUCCESS
-            const successRecord = phoneRecords.find(record => 
+            const successRecord = phoneRecords.find(record =>
                 record[9]?.toLowerCase() === 'success'
             );
-            
+
             if (successRecord) {
                 console.log('\n🎯 PHÁT HIỆN RECORD SUCCESS:');
                 console.log(`   ✅ Status: ${successRecord[9]}`);
@@ -436,57 +452,57 @@
                 console.log('\n⚠️ KHÔNG CÓ RECORD SUCCESS cho số điện thoại này');
                 console.log('📋 Các trạng thái có sẵn:', phoneRecords.map(r => r[9]));
             }
-            
+
             // Kiểm tra xem có bị trùng lặp không
             if (phoneRecords.length > 1) {
                 console.log('\n🔄 PHÁT HIỆN TRÙNG LẶP SỐ ĐIỆN THOẠI:');
                 console.log(`   📊 Số records: ${phoneRecords.length}`);
                 console.log(`   🎯 Cần logic ưu tiên SUCCESS để chọn record nào!`);
             }
-            
+
             console.log('\n🎯 DEBUG HOÀN THÀNH!');
         };
 
         // Function test check-in trực tiếp cho số 866448988
-        window.testCheckin866448988 = function() {
+        window.testCheckin866448988 = function () {
             console.log('🧪 TEST CHECK-IN TRỰC TIẾP CHO SỐ 866448988...');
             z
             if (!usersData || usersData.length === 0) {
                 console.log('❌ Chưa có dữ liệu để test');
                 return;
             }
-            
+
             // Mô phỏng quá trình tìm kiếm
             const code = '866448988';
             console.log('🔍 Tìm kiếm số điện thoại:', code);
             console.log('📱 Danh sách số điện thoại đã load:', phoneNumbers);
-            
+
             // Tìm tất cả records có số điện thoại này
             const matchingRecords = [];
-            
+
             // Thử 1: Tìm chính xác số đã nhập
             if (phoneNumbers.includes(code)) {
                 const index = phoneNumbers.indexOf(code);
                 matchingRecords.push({ index, type: 'chính xác', phone: code });
                 console.log('✅ Tìm thấy với format gốc:', code);
             }
-            
+
             // Thử 2: Nếu nhập số có 0, thử tìm không có 0
             if (code.startsWith('0') && phoneNumbers.includes(code.slice(1))) {
                 const index = phoneNumbers.indexOf(code.slice(1));
                 matchingRecords.push({ index, type: 'bỏ số 0', phone: code.slice(1) });
             }
-            
+
             // Thử 3: Nếu nhập số không có 0, thử tìm có 0
             if (!code.startsWith('0') && phoneNumbers.includes('0' + code)) {
                 const index = phoneNumbers.indexOf('0' + code);
                 matchingRecords.push({ index, type: 'thêm số 0', phone: '0' + code });
             }
-            
+
             if (matchingRecords.length === 0) {
                 return;
             }
-            
+
             // Xử lý trùng lặp và ưu tiên SUCCESS
             if (matchingRecords.length === 1) {
                 const record = matchingRecords[0];
@@ -501,28 +517,28 @@
         };
 
         // Function kiểm tra tất cả records SUCCESS
-        window.checkAllSuccessRecords = function() {
+        window.checkAllSuccessRecords = function () {
             if (!usersData || usersData.length === 0) {
                 console.log('❌ Chưa có dữ liệu để kiểm tra');
                 return;
             }
-            
+
             // Tìm tất cả records có trạng thái SUCCESS
-            const successRecords = usersData.filter(record => 
+            const successRecords = usersData.filter(record =>
                 record[9]?.toLowerCase() === 'success'
             );
-            
-           // console.log(`✅ Tìm thấy ${successRecords.length} records có trạng thái SUCCESS`);
+
+            // console.log(`✅ Tìm thấy ${successRecords.length} records có trạng thái SUCCESS`);
         };
-        
+
         // Update countdown every second
         setInterval(updateCountdown, 1000);
         updateCountdown(); // Initial call
-
+        
         // Check-in form functionality
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('checkinForm');
-
+            
             // Form submission
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
@@ -536,63 +552,37 @@
                 // Debug: Log thông tin để kiểm tra
                 console.log('Số điện thoại nhập vào:', code);
                 console.log('Tổng số records trong usersData:', usersData.length);
-                
-                // Debug: Tìm tất cả records có chứa số này
-                const debugRecords = usersData.filter((row, index) => {
-                    const phone = row[4] || '';
-                    return phone.includes('364640379') || phone.includes('0364640379');
-                });
-                console.log('=== DEBUG SỐ 364640379 ===');
-                console.log('Records chứa số 364640379:', debugRecords.length);
-                debugRecords.forEach((row, index) => {
-                    console.log(`Record ${index}:`, {
-                        phone: row[4],
-                        status: row[9],
-                        name: row[2],
-                        email: row[3]
-                    });
-                });
-                
+
                 // Chuẩn hóa số điện thoại để so sánh - sửa lại logic
                 let normalizedCode = code;
-                
+
                 // Tìm kiếm theo số điện thoại và ưu tiên SUCCESS
                 let found = false;
                 let userIndex = -1;
-                
+
                 // Tìm tất cả records có số điện thoại này (cả có 0 và không có 0)
                 const matchingRecords = [];
-                
+                console.log("abhh",usersData[107]);
+                console.log("abhh",usersData[106]);
                 // Tìm trong usersData trực tiếp theo số điện thoại (cột E - index 4)
                 usersData.forEach((row, index) => {
                     let phone = row[4] || ''; // Số điện thoại (cột E)
                     const originalPhone = phone; // Giữ số gốc để debug
-                    
+
                     // Chuẩn hóa số điện thoại để so sánh
-                    if (phone && phone.length >= 9 && phone.length <= 10 && !phone.startsWith('0')) {
+                    if (phone && !phone.startsWith('0')) {
                         phone = '0' + phone;
                     }
-                    
-                    // Debug cho số 364640379
-                    if (originalPhone.includes('364640379') || originalPhone.includes('0364640379')) {
-                        console.log(`🔍 Checking record ${index}:`, {
-                            originalPhone: originalPhone,
-                            normalizedPhone: phone,
-                            inputCode: code,
-                            status: row[9],
-                            name: row[2]
-                        });
-                    }
-                    
                     // So sánh với số điện thoại nhập vào
-                    if (phone === code || phone === '0' + code || phone === code.slice(1)) {
-                        matchingRecords.push({ index, phone, status: row[9] || '' });
+                    if ((phone.trim() === code.trim() || phone === '0' + code.trim() || phone === code.trim().slice(1))
+                        && (row[9] || row[7] || '').toString().toLowerCase().trim() === 'success') {
+                        matchingRecords.push({ index, phone, status: row[9] || row[7] || '', ticket: row[25] || row[5] || '', ticketNumber: row[20] || row[6] || '' });
                         console.log(`✅ Tìm thấy record ${index}: phone=${phone}, status=${row[9]}`);
                     }
                 });
-                
+
                 console.log(`Tổng số records tìm thấy: ${matchingRecords.length}`);
-                
+
                 if (matchingRecords.length > 0) {
                     if (matchingRecords.length === 1) {
                         // Chỉ có 1 record, sử dụng luôn
@@ -600,57 +590,57 @@
                         userIndex = matchingRecords[0].index;
                         console.log(`✅ Sử dụng record duy nhất: ${matchingRecords[0].phone}`);
                     } else {
-                        // Có nhiều records, ưu tiên SUCCESS
-                        console.log(`🔄 Phát hiện ${matchingRecords.length} records trùng lặp, ưu tiên SUCCESS...`);
-                        
-                        // Tìm record có trạng thái SUCCESS
-                        const successRecord = matchingRecords.find(record => {
-                            const status = (record.status || '').toString().toLowerCase().trim();
-                            console.log(`🔍 Checking status: "${status}" for phone ${record.phone}`);
-                            const isSuccess = status === 'success';
-                            console.log(`   Is SUCCESS? ${isSuccess}`);
-                            return isSuccess;
-                        });
-                        
-                        if (successRecord) {
-                            found = true;
-                            userIndex = successRecord.index;
-                            console.log(`🎯 Ưu tiên record SUCCESS: ${successRecord.phone} - ${successRecord.status}`);
-                        } else {
-                            // Nếu không có SUCCESS, lấy record đầu tiên
-                            found = true;
-                            userIndex = matchingRecords[0].index;
-                            console.log(`⚠️ Không có SUCCESS, sử dụng record đầu tiên: ${matchingRecords[0].phone}`);
-                        }
+                        console.log("matchingRecords:", matchingRecords);
+                        found = true;
+                        userIndex = matchingRecords[0].index;
+                        // const successRecord = matchingRecords.find(record => {
+                        //     const status = (record.status || '').toString().toLowerCase().trim();
+                        //     console.log(`🔍 Checking status: "${status}" for phone ${record.phone}`);
+                        //     const isSuccess = status === 'success';
+                        //     console.log(`   Is SUCCESS? ${isSuccess}`);
+                        //     return isSuccess;
+                        // });
+
+                        // if (successRecord) {
+                        //     found = true;
+                        //     userIndex = successRecord.index;
+                        //     console.log(`🎯 Ưu tiên record SUCCESS: ${successRecord.phone} - ${successRecord.status}`);
+                        // }
+                        //  else {
+                        //     // Nếu không có SUCCESS, lấy record đầu tiên
+                        //     found = true;
+                        //     userIndex = matchingRecords[0].index;
+                        //     console.log(`⚠️ Không có SUCCESS, sử dụng record đầu tiên: ${matchingRecords[0].phone}`);
+                        // }
                     }
                 }
-                
-                                 if (found) {
-                     // Tìm thông tin của người đó từ mảng values
-                     const userInfo = usersData[userIndex];
-                     const paymentStatus = userInfo[9] || ''; // Trạng thái thanh toán (cột J)
 
-                     console.log("Thông tin người check-in:", userInfo);
-                     console.log("Trạng thái thanh toán:", paymentStatus);
+                if (found) {
+                    // Tìm thông tin của người đó từ mảng values
+                    const userInfo = usersData[userIndex];
+                    const paymentStatus = userInfo[9] || ''; // Trạng thái thanh toán (cột J)
 
-                     // Kiểm tra trạng thái thanh toán
-                     if (paymentStatus.toLowerCase() === 'pending') {
-                         // Trạng thái Pending - hiển thị thông báo thất bại và nhắc nhở thanh toán
-                         showNotification('Check-in thất bại! Vui lòng hoàn tất thanh toán trước khi check-in.', 'error');
-                         document.getElementById('checkinCode').value = ''; // Làm sạch ô input
-                         return;
-                     }
+                    console.log("Thông tin người check-in:", userInfo);
+                    console.log("Trạng thái thanh toán:", paymentStatus);
 
-                     // Trạng thái khác (Success, etc.) - cho phép check-in
-                     showNotification('Check-in thành công!', 'success');
-                     
-                     // Gửi dữ liệu đến Google Sheet
-                     sendCheckinToGoogleSheet(userInfo, userIndex);
-                     
-                     // Hiển thị thông tin chi tiết khách hàng
-                     displayCustomerDetails(userInfo);
-                     
-                     document.getElementById('checkinCode').value = ''; // Làm sạch ô input
+                    // Kiểm tra trạng thái thanh toán
+                    if (paymentStatus.toLowerCase() === 'pending') {
+                        // Trạng thái Pending - hiển thị thông báo thất bại và nhắc nhở thanh toán
+                        showNotification('Check-in thất bại! Vui lòng hoàn tất thanh toán trước khi check-in.', 'error');
+                        document.getElementById('checkinCode').value = ''; // Làm sạch ô input
+                        return;
+                    }
+
+                    // Trạng thái khác (Success, etc.) - cho phép check-in
+                    showNotification('Check-in thành công!', 'success');
+
+                    // Gửi dữ liệu đến Google Sheet
+                    sendCheckinToGoogleSheet(userInfo, userIndex);
+
+                    // Hiển thị thông tin chi tiết khách hàng
+                    displayCustomerDetails(userInfo, matchingRecords);
+
+                    document.getElementById('checkinCode').value = ''; // Làm sạch ô input
                 } else {
                     showNotification('Không tìm thấy thông tin người đăng kí trong danh sách!', 'error');
                 }
@@ -658,13 +648,16 @@
         });
 
         // Function to display customer details
-        function displayCustomerDetails(userInfo) {
-            
+        function displayCustomerDetails(userInfo, matchingRecords) {
+
+            // Reset form trước khi hiển thị thông tin mới
+            resetCheckinForm();
+
             // Đảm bảo ẩn hoàn toàn tất cả sections khác
             const countdownSection = document.getElementById('countdownSection');
             const checkinSection = document.getElementById('checkinSection');
             const customerDetailsSection = document.getElementById('customerDetailsSection');
-            
+
             // Force ẩn hoàn toàn checkinSection - sử dụng nhiều phương pháp
             if (checkinSection) {
                 checkinSection.style.display = 'none';
@@ -674,12 +667,12 @@
                 checkinSection.style.left = '-9999px';
                 checkinSection.style.zIndex = '-9999';
             }
-            
+
             // Ẩn countdownSection
             if (countdownSection) {
                 countdownSection.style.display = 'none';
             }
-            
+
             // Hiển thị section thông tin khách hàng
             if (customerDetailsSection) {
                 customerDetailsSection.style.display = 'block';
@@ -688,7 +681,7 @@
                 customerDetailsSection.style.position = 'relative';
                 customerDetailsSection.style.zIndex = '1';
             }
-            
+
             // Triple check để đảm bảo checkinSection đã biến mất hoàn toàn
             setTimeout(() => {
                 if (checkinSection) {
@@ -696,51 +689,160 @@
                     checkinSection.style.visibility = 'hidden';
                 }
             }, 50);
-            
+
             setTimeout(() => {
                 if (checkinSection) {
                     checkinSection.style.display = 'none';
                     checkinSection.style.visibility = 'hidden';
                 }
             }, 200);
-            
-                         // Cập nhật thông tin khách hàng theo cấu trúc thực tế của Google Sheets
-             // Dựa trên hình ảnh, cần sửa lại mapping cho đúng
-             document.getElementById('customerName').textContent = userInfo[2] || '-'; // Họ tên (cột C)
-                           // Hiển thị số điện thoại với số 0 ở đầu
-              let phoneDisplay = userInfo[4] || '-';
-              if (phoneDisplay !== '-' && !phoneDisplay.startsWith('0') && phoneDisplay.length >= 9 && phoneDisplay.length <= 10) {
-                  phoneDisplay = '0' + phoneDisplay;
-              }
-              document.getElementById('customerPhone').textContent = phoneDisplay; // SĐT (cột E)
-             document.getElementById('customerEmail').textContent = userInfo[3] || '-'; // Email (cột D)
-             document.getElementById('customerEmail').href = `mailto:${userInfo[3] || ''}`;
-                                         // Cập nhật hạng vé và áp dụng màu sắc
-             const ticketClass = userInfo[25] || '-';
-             const ticketElement = document.getElementById('customerTicketClass');
-             ticketElement.textContent = ticketClass;
-             
-             // Áp dụng màu sắc dựa trên hạng vé
-             applyTicketClassColor(ticketElement, ticketClass);
-             
-             // Logic xử lý Mã đơn hàng và Thời gian thanh toán (đã ẩn UI nhưng vẫn giữ logic)
-             // document.getElementById('customerOrderCode').textContent = userInfo[0] || '-'; // Mã đơn hàng (cột A)
-             
-             // Hiển thị thời gian thanh toán hoặc trạng thái (đã ẩn UI nhưng vẫn giữ logic)
-             const paymentStatus = userInfo[9] || ''; // Trạng thái thanh toán (cột J)
-             const paymentTime = userInfo[7] || ''; // Thời gian thanh toán (cột H - paid_at)
-             
-             // Logic xử lý payment status (đã ẩn UI nhưng vẫn giữ logic)
-             // if (paymentStatus.toLowerCase() === 'success' && paymentTime) {
-             //     // Nếu đã thanh toán thành công, hiển thị thời gian thanh toán
-             //     document.getElementById('customerStatus').textContent = paymentTime;
-             // } else {
-             //     // Nếu chưa thanh toán hoặc không có thời gian, hiển thị trạng thái
-             //     document.getElementById('customerStatus').textContent = paymentStatus || '-';
-             // }
-            
 
+            // 2 data ở 2 sheet khác nhau ở cột nhưng đủ dữ liệu:
+            // 1. data ở sheet LadiPage
+            // Tên: cột 2, SĐT: cột 4, Email: cột 3, Hạng vé: cột 25, số vé: cột 20
+            // 2. data ở sheet Chốt vé
+            // Tên: cột 2, SĐT: cột 4, Email: cột 3, Hạng vé: cột 5, số vé: cột 6
+            // kiểm tra xem user ở sheet nào để gán index cho cột hạng vé và số vé
+            let ticketIndex = 0;
+            let ticketNumber = 0;
+            if (userInfo[9]) {
+                ticketIndex = 25;
+                ticketNumber = 20;
+            } else {
+                ticketIndex = 5;
+                ticketNumber = 6;
+            }
+            console.log("ticketIndex:", ticketIndex);
+            document.getElementById('customerName').textContent = userInfo[2] || '-'; // Họ tên (cột C)
+            // Hiển thị số điện thoại với số 0 ở đầu
+            let phoneDisplay = userInfo[4] || '-';
+            if (phoneDisplay !== '-' && !phoneDisplay.startsWith('0') && phoneDisplay.length >= 9 && phoneDisplay.length <= 10) {
+                phoneDisplay = '0' + phoneDisplay;
+            }
+            document.getElementById('customerPhone').textContent = phoneDisplay; // SĐT (cột E)
+            document.getElementById('customerEmail').textContent = userInfo[3] || '-'; // Email (cột D)
+            document.getElementById('customerEmail').href = `mailto:${userInfo[3] || ''}`;
+            // Cập nhật hạng vé và số lượng
+            const ticketClass = userInfo[ticketIndex] || '-';
+            const ticketElement = document.getElementById('customerTicketClass');
+            const quantityElement = document.getElementById('customerQuantity');
             
+            if(matchingRecords.length === 1){
+                // Hiển thị lại element cũ
+                // ticketElement.style.display = 'inline-block';
+                // quantityElement.style.display = 'inline-block';
+                
+                const cleanTicketClass = ticketClass.replace(/[0-9]/g, '');
+                ticketElement.textContent = cleanTicketClass;
+                quantityElement.textContent = '1';
+                
+                // Áp dụng màu sắc dựa trên hạng vé gốc (chưa loại bỏ số)
+                applyTicketClassColor(ticketElement, ticketClass);
+            } else if(matchingRecords.length > 1) {
+                // Xử lý trường hợp có nhiều vé - hiển thị danh sách các loại vé
+                const ticketTypes = new Map(); // Map để lưu loại vé và số lượng
+                
+                // Lấy thông tin vé từ tất cả records trong matchingRecords
+                matchingRecords.forEach(record => {
+                    const recordUserInfo = usersData[record.index];
+                    let recordTicketIndex = 0;
+                    
+                    // Xác định index cột hạng vé cho từng record
+                    if (recordUserInfo[9]) {
+                        recordTicketIndex = 25; // Sheet LadiPage
+                    } else {
+                        recordTicketIndex = 5;  // Sheet Chốt vé
+                    }
+                    
+                    const recordTicketClass = recordUserInfo[recordTicketIndex] || '';
+                    const recordTicketNumber = recordUserInfo[recordTicketIndex === 25 ? 20 : 6] || 1;
+                    
+                    if (recordTicketClass) {
+                        const cleanTicketClass = recordTicketClass.replace(/[0-9]/g, '');
+                        const quantity = parseInt(recordTicketNumber) || 1;
+                        
+                        // Cộng dồn số lượng cho cùng loại vé
+                        if (ticketTypes.has(cleanTicketClass)) {
+                            ticketTypes.set(cleanTicketClass, ticketTypes.get(cleanTicketClass) + quantity);
+                        } else {
+                            ticketTypes.set(cleanTicketClass, quantity);
+                        }
+                        
+                        // Lưu thông tin gốc để áp dụng màu sắc
+                        if (!ticketTypes.has(cleanTicketClass + '_original')) {
+                            ticketTypes.set(cleanTicketClass + '_original', recordTicketClass);
+                        }
+                    }
+                });
+                
+                // Tạo nhiều dòng cho từng loại vé
+                const ticketListContainer = document.getElementById('ticketList');
+                ticketListContainer.innerHTML = ''; // Xóa nội dung cũ
+                
+                if (ticketTypes.size > 0) {
+                    ticketTypes.forEach((quantity, ticketType) => {
+                        // Bỏ qua các key có _original
+                        if (ticketType.includes('_original')) return;
+                        
+                        const ticketItem = document.createElement('div');
+                        ticketItem.className = 'ticket-item';
+                        ticketItem.innerHTML = `
+                            <span class="detail-value ticket-class">${ticketType}</span>
+                            <div class="quantity-box">
+                                <span class="quantity-label">SL:</span>
+                                <span class="quantity-value">${quantity}</span>
+                            </div>
+                        `;
+                        ticketListContainer.appendChild(ticketItem);
+                        
+                        // Áp dụng màu sắc cho từng loại vé - sử dụng thông tin gốc
+                        const ticketElement = ticketItem.querySelector('.ticket-class');
+                        const originalTicketClass = ticketTypes.get(ticketType + '_original') || ticketType;
+                        applyTicketClassColor(ticketElement, originalTicketClass);
+                    });
+                } else {
+                    // Trường hợp không có vé
+                    const ticketItem = document.createElement('div');
+                    ticketItem.className = 'ticket-item';
+                    ticketItem.innerHTML = `
+                        <span class="detail-value ticket-class">-</span>
+                        <div class="quantity-box">
+                            <span class="quantity-label">SL:</span>
+                            <span class="quantity-value">0</span>
+                        </div>
+                    `;
+                    ticketListContainer.appendChild(ticketItem);
+                }
+                
+                // Ẩn các element cũ
+                ticketElement.style.display = 'none';
+                quantityElement.style.display = 'none';
+            } else {
+                // Trường hợp không tìm thấy vé
+                ticketElement.textContent = '-';
+                quantityElement.textContent = '0';
+            }
+            
+            // Áp dụng màu sắc đã được xử lý trong các trường hợp trên
+
+            // Logic xử lý Mã đơn hàng và Thời gian thanh toán (đã ẩn UI nhưng vẫn giữ logic)
+            // document.getElementById('customerOrderCode').textContent = userInfo[0] || '-'; // Mã đơn hàng (cột A)
+
+            // Hiển thị thời gian thanh toán hoặc trạng thái (đã ẩn UI nhưng vẫn giữ logic)
+            const paymentStatus = userInfo[9] || ''; // Trạng thái thanh toán (cột J)
+            const paymentTime = userInfo[7] || ''; // Thời gian thanh toán (cột H - paid_at)
+
+            // Logic xử lý payment status (đã ẩn UI nhưng vẫn giữ logic)
+            // if (paymentStatus.toLowerCase() === 'success' && paymentTime) {
+            //     // Nếu đã thanh toán thành công, hiển thị thời gian thanh toán
+            //     document.getElementById('customerStatus').textContent = paymentTime;
+            // } else {
+            //     // Nếu chưa thanh toán hoặc không có thời gian, hiển thị trạng thái
+            //     document.getElementById('customerStatus').textContent = paymentStatus || '-';
+            // }
+
+
+
             // Kiểm tra trạng thái hiển thị sau khi hoàn thành
             setTimeout(() => {
                 checkSectionVisibility();
@@ -752,14 +854,14 @@
             const countdownSection = document.getElementById('countdownSection');
             const checkinSection = document.getElementById('checkinSection');
             const customerDetailsSection = document.getElementById('customerDetailsSection');
-            
+
             // Ẩn các sections khác
             if (countdownSection) countdownSection.style.display = 'none';
             if (customerDetailsSection) {
                 customerDetailsSection.style.display = 'none';
                 customerDetailsSection.style.visibility = 'hidden';
             }
-            
+
             // Reset và hiển thị checkinSection
             if (checkinSection) {
                 checkinSection.style.display = 'block';
@@ -769,8 +871,64 @@
                 checkinSection.style.left = 'auto';
                 checkinSection.style.zIndex = 'auto';
             }
-            
 
+            // Reset form và dữ liệu
+            resetCheckinForm();
+        }
+
+        // Function to reset check-in form and data
+        function resetCheckinForm() {
+            // Reset input field
+            const checkinInput = document.getElementById('checkinCode');
+            if (checkinInput) {
+                checkinInput.value = '';
+                checkinInput.focus();
+            }
+
+            // Reset customer details display
+            const customerName = document.getElementById('customerName');
+            const customerPhone = document.getElementById('customerPhone');
+            const customerEmail = document.getElementById('customerEmail');
+            const ticketElement = document.getElementById('customerTicketClass');
+            const quantityElement = document.getElementById('customerQuantity');
+
+            if (customerName) customerName.textContent = '-';
+            if (customerPhone) customerPhone.textContent = '-';
+            if (customerEmail) {
+                customerEmail.textContent = '-';
+                customerEmail.href = '#';
+            }
+
+            // Reset ticket display to default state
+            if (ticketElement) {
+                ticketElement.textContent = '-';
+                ticketElement.style.display = 'inline-block';
+                ticketElement.className = 'detail-value ticket-class';
+                ticketElement.style.background = '';
+                ticketElement.style.border = '';
+                ticketElement.style.color = '';
+            }
+
+            if (quantityElement) {
+                quantityElement.textContent = '-';
+                quantityElement.style.display = 'inline-block';
+            }
+
+            // Reset ticket list to default state
+            const ticketListContainer = document.getElementById('ticketList');
+            if (ticketListContainer) {
+                ticketListContainer.innerHTML = `
+                    <div class="ticket-item">
+                        <span class="detail-value ticket-class" id="customerTicketClass">-</span>
+                        <div class="quantity-box">
+                            <span class="quantity-label">SL:</span>
+                            <span class="quantity-value" id="customerQuantity">-</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            console.log('✅ Form đã được reset hoàn toàn');
         }
 
         // Function to check section visibility status
@@ -787,18 +945,30 @@
             element.style.background = '';
             element.style.border = '';
             element.style.color = '';
+
+            // Debug: Log để kiểm tra ticketClass
+            console.log('🎨 Applying color for ticket class:', ticketClass);
+
+            // Thêm class tương ứng dựa trên hạng vé - sử dụng toLowerCase() để linh hoạt hơn
+            const ticketClassLower = ticketClass.toLowerCase();
             
-            // Thêm class tương ứng dựa trên hạng vé
-            if (ticketClass.includes('SILVER199')) {
+            if (ticketClassLower.includes('silver') || ticketClassLower.includes('silver199')) {
                 element.classList.add('silver');
-            } else if (ticketClass.includes('GOLD299')) {
+                console.log('✅ Applied SILVER class');
+            } else if (ticketClassLower.includes('gold') || ticketClassLower.includes('gold299')) {
                 element.classList.add('gold');
-            } else if (ticketClass.includes('DIAMOND599')) {
+                console.log('✅ Applied GOLD class');
+            } else if (ticketClassLower.includes('diamond') || ticketClassLower.includes('diamond599')) {
                 element.classList.add('diamond');
-            } else if (ticketClass.includes('VIP999')) {
+                console.log('✅ Applied DIAMOND class');
+            } else if (ticketClassLower.includes('vip') || ticketClassLower.includes('vip999')) {
                 element.classList.add('vip');
-            } else if (ticketClass.includes('PLATINUM399')) {
+                console.log('✅ Applied VIP class');
+            } else if (ticketClassLower.includes('platinum') || ticketClassLower.includes('platinum399')) {
                 element.classList.add('platinum');
+                console.log('✅ Applied PLATINUM class');
+            } else {
+                console.log('⚠️ No matching ticket class found for:', ticketClass);
             }
         }
 

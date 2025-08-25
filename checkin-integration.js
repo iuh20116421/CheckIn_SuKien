@@ -40,10 +40,8 @@ function sendCheckinToGoogleSheet(userInfo, userIndex) {
       
       // Process ticket type - extract part after "-"
       // Phần chỉ hiện ticket type ngắn ngọn
-      let ticketType = userInfo[21] || '';
-      if (ticketType && ticketType.includes('-')) {
-        ticketType = ticketType.split('-').pop().trim();
-      }
+      let ticketType = userInfo[25] || userInfo[5] ||'';
+      ticketType = ticketType.replace(/[0-9]/g, '');
       
       // Prepare parameters for JSONP
       const params = new URLSearchParams({

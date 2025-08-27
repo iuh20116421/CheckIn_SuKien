@@ -8,22 +8,22 @@ function doPost(e) {
   try {
     // Parse JSON data from POST request
     const data = JSON.parse(e.postData.contents);
-    
+  
     // Get the active spreadsheet
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    
+
     // Generate STT (sequential number) - account for header row
     const lastRow = sheet.getLastRow();
     // If there's only header row (row 1) or empty sheet, start STT from 1
     // Otherwise, STT = current row number (excluding header)
     const stt = lastRow <= 1 ? 1 : lastRow;
-    
+
     // Format timestamp in Vietnam timezone
     const timestamp = new Date(data.timestamp || new Date());
     const vietnamTime = Utilities.formatDate(timestamp, 'Asia/Ho_Chi_Minh', 'dd/MM/yyyy HH:mm:ss');
-    
+
     // Extract data from userInfo array or direct fields
-    let fullName, email, phoneNumber, ticketType;
+    let fullName, email, phoneNumber, ticketType, ticketQuantity;
     
     if (data.userInfo && Array.isArray(data.userInfo)) {
       // Extract from userInfo array structure
@@ -31,22 +31,25 @@ function doPost(e) {
       email = data.userInfo[3] || ''; // Email
       phoneNumber = data.userInfo[4] || data.userInfo[27] || ''; // Số điện thoại hoặc Billing Phone
       ticketType = data.userInfo[21] || ''; // Tên sản phẩm (Lineitem name)
+      ticketQuantity = data.ticketQuantity || 1; // Số lượng vé
     } else {
       // Direct field mapping
       fullName = data.fullName || data.name || '';
       email = data.email || '';
       phoneNumber = data.phoneNumber || data.phone || '';
       ticketType = data.ticketType || data.ticket || '';
+      ticketQuantity = data.ticketQuantity || 1; // Số lượng vé
     }
-    
-    // Prepare data row: STT, Thời gian Check-in, Họ tên, Email, Số điện thoại, Hạng vé
+
+    // Prepare data row: STT, Thời gian Check-in, Họ tên, Email, Số điện thoại, Hạng vé, Số lượng vé
     const newRow = [
       stt,
       vietnamTime,
       fullName,
       email,
       phoneNumber,
-      ticketType
+      ticketType,
+      ticketQuantity
     ];
     
     // Append new row to the sheet
@@ -63,7 +66,8 @@ function doPost(e) {
           fullName: fullName,
           email: email,
           phoneNumber: phoneNumber,
-          ticketType: ticketType
+          ticketType: ticketType,
+          ticketQuantity: ticketQuantity
         }
       }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -166,7 +170,7 @@ function processFormData(data) {
     const vietnamTime = Utilities.formatDate(timestamp, 'Asia/Ho_Chi_Minh', 'dd/MM/yyyy HH:mm:ss');
     
     // Extract data from userInfo array or direct fields
-    let fullName, email, phoneNumber, ticketType;
+    let fullName, email, phoneNumber, ticketType, ticketQuantity;
     
     if (data.userInfo && Array.isArray(data.userInfo)) {
       // Extract from userInfo array structure
@@ -174,22 +178,25 @@ function processFormData(data) {
       email = data.userInfo[3] || ''; // Email
       phoneNumber = data.userInfo[4] || data.userInfo[27] || ''; // Số điện thoại hoặc Billing Phone
       ticketType = data.userInfo[21] || ''; // Tên sản phẩm (Lineitem name)
+      ticketQuantity = data.ticketQuantity || 1; // Số lượng vé
     } else {
       // Direct field mapping
       fullName = data.fullName || data.name || '';
       email = data.email || '';
       phoneNumber = data.phoneNumber || data.phone || '';
       ticketType = data.ticketType || data.ticket || '';
+      ticketQuantity = data.ticketQuantity || 1; // Số lượng vé
     }
-    
-    // Prepare data row: STT, Thời gian Check-in, Họ tên, Email, Số điện thoại, Hạng vé
+
+    // Prepare data row: STT, Thời gian Check-in, Họ tên, Email, Số điện thoại, Hạng vé, Số lượng vé
     const newRow = [
       stt,
       vietnamTime,
       fullName,
       email,
       phoneNumber,
-      ticketType
+      ticketType,
+      ticketQuantity
     ];
     
     // Append new row to the sheet
@@ -238,15 +245,17 @@ function processUserInfoData(userInfo, params) {
     const email = userInfo[3] || ''; // Email
     const phoneNumber = userInfo[4] || userInfo[27] || ''; // Số điện thoại hoặc Billing Phone
     const ticketType = userInfo[21] || ''; // Tên sản phẩm (Lineitem name)
-    
-    // Prepare data row: STT, Thời gian Check-in, Họ tên, Email, Số điện thoại, Hạng vé
+    const ticketQuantity = params.ticketQuantity || 1; // Số lượng vé từ params
+
+    // Prepare data row: STT, Thời gian Check-in, Họ tên, Email, Số điện thoại, Hạng vé, Số lượng vé
     const newRow = [
       stt,
       vietnamTime,
       fullName,
       email,
       phoneNumber,
-      ticketType
+      ticketType,
+      ticketQuantity
     ];
     
     // Append new row to the sheet
@@ -333,7 +342,8 @@ function checkDuplicateCheckin(email, phone) {
             fullName: row[2],
             email: row[3],
             phone: row[4],
-            ticketType: row[5]
+            ticketType: row[5],
+            ticketQuantity: row[6] || 1
           }
         };
       }

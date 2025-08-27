@@ -10,9 +10,10 @@ const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWHdeyu
  * Send check-in data to Google Apps Script using JSONP
  * @param {Array} userInfo - User information array from the system
  * @param {number} userIndex - Index of the user in usersData array
+ * @param {Array} matchingRecords - Array of matching records with same phone number
  * @returns {Promise} - Response from Google Apps Script
  */
-function sendCheckinToGoogleSheet(userInfo, userIndex) {
+function sendCheckinToGoogleSheet(userInfo, userIndex, matchingRecords = []) {
   return new Promise((resolve, reject) => {
     try {
              console.log('🔄 Đang gửi dữ liệu check-in...');
@@ -42,13 +43,29 @@ function sendCheckinToGoogleSheet(userInfo, userIndex) {
       // Phần chỉ hiện ticket type ngắn ngọn
       let ticketType = userInfo[25] || userInfo[5] ||'';
       ticketType = ticketType.replace(/[0-9]/g, '');
-      
+
+      // Calculate total ticket quantity from matchingRecords
+      let totalTicketQuantity = 0;
+      if (matchingRecords && matchingRecords.length > 0) {
+        totalTicketQuantity = matchingRecords.reduce((sum, record) => {
+          const quantity = parseInt(record.ticketNumber) || 1;
+          return sum + quantity;
+        }, 0);
+      } else {
+        // Fallback: get quantity from current userInfo
+        totalTicketQuantity = parseInt(userInfo[20] || userInfo[6]) || 1;
+      }
+
+      console.log('📊 Tổng số lượng vé:', totalTicketQuantity);
+      console.log('📋 Matching records:', matchingRecords);
+
       // Prepare parameters for JSONP
       const params = new URLSearchParams({
         fullName: userInfo[2] || userInfo[26] || '',
         email: userInfo[3] || '',
         phoneNumber: userInfo[4] || userInfo[27] || '',
         ticketType: ticketType,
+        ticketQuantity: totalTicketQuantity,
         userIndex: userIndex,
         timestamp: new Date().toISOString(),
         callback: callbackName
@@ -92,16 +109,16 @@ document.addEventListener('DOMContentLoaded', function () {
   // Override or extend the existing check-in success handler
   const originalCheckinSuccess = window.handleCheckinSuccess;
   
-  window.handleCheckinSuccess = async function(userInfo, userIndex) {
+  window.handleCheckinSuccess = async function(userInfo, userIndex, matchingRecords) {
     try {
       // Call original handler if exists
       if (originalCheckinSuccess) {
-        originalCheckinSuccess(userInfo, userIndex);
+        originalCheckinSuccess(userInfo, userIndex, matchingRecords);
       }
-      
+
       // Send data to Google Sheet
-      await sendCheckinToGoogleSheet(userInfo, userIndex);
-      
+      await sendCheckinToGoogleSheet(userInfo, userIndex, matchingRecords);
+
     } catch (error) {
       console.error('❌ Lỗi trong quá trình check-in:', error);
       // Continue with original flow even if Google Sheet fails

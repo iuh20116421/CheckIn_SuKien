@@ -22,7 +22,7 @@
             GOOGLE_SHEETS_ChotVe: {
                 API_KEY_ChotVe: 'AIzaSyDW-UUUQc4AFLpO3kMk_lB_RkSF_sHZyo4',
                 SPREADSHEET_ID_ChotVe: '1onh0l-7hZ2JQDr9c4rnkC6QHXALYnvRJGdMOs2Wb8w4',
-                RANGE_ChotVe: 'Chốt vé!A1:H7'
+                RANGE_ChotVe: 'Chốt vé!A1:H8'
             },
 
             // File Google Sheets để lưu dữ liệu check-in
@@ -582,7 +582,7 @@
                 });
 
                 console.log(`Tổng số records tìm thấy: ${matchingRecords.length}`);
-
+                console.log("matchingRecords:", matchingRecords);
                 if (matchingRecords.length > 0) {
                     if (matchingRecords.length === 1) {
                         // Chỉ có 1 record, sử dụng luôn
@@ -635,7 +635,7 @@
                     showNotification('Check-in thành công!', 'success');
 
                     // Gửi dữ liệu đến Google Sheet
-                    sendCheckinToGoogleSheet(userInfo, userIndex);
+                    sendCheckinToGoogleSheet(userInfo, userIndex, matchingRecords);
 
                     // Hiển thị thông tin chi tiết khách hàng
                     displayCustomerDetails(userInfo, matchingRecords);
@@ -734,14 +734,14 @@
                 
                 const cleanTicketClass = ticketClass.replace(/[0-9]/g, '');
                 ticketElement.textContent = cleanTicketClass;
-                quantityElement.textContent = '1';
+                const quantity = matchingRecords[0].ticketNumber || 1;
+                quantityElement.textContent = parseInt(quantity);
                 
                 // Áp dụng màu sắc dựa trên hạng vé gốc (chưa loại bỏ số)
                 applyTicketClassColor(ticketElement, ticketClass);
             } else if(matchingRecords.length > 1) {
                 // Xử lý trường hợp có nhiều vé - hiển thị danh sách các loại vé
                 const ticketTypes = new Map(); // Map để lưu loại vé và số lượng
-                
                 // Lấy thông tin vé từ tất cả records trong matchingRecords
                 matchingRecords.forEach(record => {
                     const recordUserInfo = usersData[record.index];

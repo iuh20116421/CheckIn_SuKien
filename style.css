@@ -644,7 +644,7 @@ body::after {
     border-width: 2px;
     border-style: solid;
     border-color: #1a0ce7;
-    border-radius: 30px;
+    border-radius: 10px;
     font-size: 20px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(250, 250, 255, 0.9));
     color: rgb(51, 51, 51);
@@ -689,7 +689,7 @@ body::after {
     background: linear-gradient(135deg, rgb(185, 28, 28) 0%, rgb(220, 38, 38) 25%, rgb(239, 68, 68) 50%, rgb(245, 101, 101) 75%, rgb(185, 28, 28) 100%) 0% 0% / 300% 300%;
     color: white;
     border: none;
-    border-radius: 50px;
+    border-radius: 10px;
     font-size: 24px;
     font-weight: 700;
     cursor: pointer;

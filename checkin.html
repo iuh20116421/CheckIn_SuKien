@@ -633,7 +633,7 @@
 
                     // Trạng thái khác (Success, etc.) - cho phép check-in
                     showNotification('Check-in thành công!', 'success');
-
+                    console.log("matchingRecordsmatchingRecords:", matchingRecords);
                     // Gửi dữ liệu đến Google Sheet
                     sendCheckinToGoogleSheet(userInfo, userIndex, matchingRecords);
 

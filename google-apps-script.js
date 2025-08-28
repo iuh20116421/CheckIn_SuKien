@@ -244,7 +244,7 @@ function processUserInfoData(userInfo, params) {
     const fullName = userInfo[2] || userInfo[26] || ''; // Tên khách hàng hoặc Tên người thanh toán
     const email = userInfo[3] || ''; // Email
     const phoneNumber = userInfo[4] || userInfo[27] || ''; // Số điện thoại hoặc Billing Phone
-    const ticketType = userInfo[21] || ''; // Tên sản phẩm (Lineitem name)
+    const ticketType = params.ticketType || userInfo[21] || ''; // Chi tiết hạng vé từ params hoặc fallback
     const ticketQuantity = params.ticketQuantity || 1; // Số lượng vé từ params
 
     // Prepare data row: STT, Thời gian Check-in, Họ tên, Email, Số điện thoại, Hạng vé, Số lượng vé

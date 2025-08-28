@@ -39,24 +39,42 @@ function sendCheckinToGoogleSheet(userInfo, userIndex, matchingRecords = []) {
         }
       };
       
-      // Process ticket type - extract part after "-"
-      // Phần chỉ hiện ticket type ngắn ngọn
-      let ticketType = userInfo[25] || userInfo[5] ||'';
-      ticketType = ticketType.replace(/[0-9]/g, '');
-
-      // Calculate total ticket quantity from matchingRecords
+      // Process ticket type - create detailed ticket type string
+      let ticketType = '';
       let totalTicketQuantity = 0;
+
       if (matchingRecords && matchingRecords.length > 0) {
-        totalTicketQuantity = matchingRecords.reduce((sum, record) => {
+        // Group tickets by type and calculate quantities
+        const ticketMap = {};
+
+        matchingRecords.forEach(record => {
+          const ticket = record.ticket.replace(/[0-9]/g, '').trim();
           const quantity = parseInt(record.ticketNumber) || 1;
-          return sum + quantity;
-        }, 0);
+
+          if (ticketMap[ticket]) {
+            ticketMap[ticket] += quantity;
+          } else {
+            ticketMap[ticket] = quantity;
+          }
+          totalTicketQuantity += quantity;
+        });
+
+        // Create detailed ticket type string: "A: 3, B: 2, C: 2"
+        ticketType = Object.entries(ticketMap)
+          .map(([ticket, qty]) => `${ticket}: ${qty}`)
+          .join(', ');
+
+        console.log('📊 Chi tiết hạng vé:', ticketType);
+        console.log('📊 Tổng số lượng vé:', totalTicketQuantity);
       } else {
-        // Fallback: get quantity from current userInfo
+        // Fallback: get from current userInfo
+        ticketType = (userInfo[25] || userInfo[5] || '').replace(/[0-9]/g, '').trim();
         totalTicketQuantity = parseInt(userInfo[20] || userInfo[6]) || 1;
+
+        console.log('📊 Hạng vé (fallback):', ticketType);
+        console.log('📊 Số lượng vé (fallback):', totalTicketQuantity);
       }
 
-      console.log('📊 Tổng số lượng vé:', totalTicketQuantity);
       console.log('📋 Matching records:', matchingRecords);
 
       // Prepare parameters for JSONP
